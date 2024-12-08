@@ -13,8 +13,13 @@ const router = createRouter({
 				{
 					path: '/',
 					name: '首页',
-					component: () => import('@/views/index_view/HomeView.vue')
-				}
+					component: () => import('@/views/tb/EchartsView.vue')
+				},
+				{
+					path: '/main/user-info',
+					name: '个人信息',
+					component: () => import('@/views/init/AccountInfoView.vue')
+				},
 			]
 		}, {
 			path: '/welcome',
@@ -83,7 +88,7 @@ router.beforeEach(async (to, from, next) => {
                             let route = {
                                 name: e.name,
                                 path: e.path,
-                                component: () => import('../views' + e.component + '.vue')
+                                component: () => import(/* @vite-ignore */ '../views' + e.component + '.vue')
                             };
                             router.addRoute("index", route);
                         }

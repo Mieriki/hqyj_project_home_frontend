@@ -14,9 +14,9 @@
 				    :collapse="isCollapse"
 					router>
 					<div style="display: flex; align-items: center; justify-content: center; height: 60px;">
-						<el-image src="https://t.tutu.to/img/mZhyw" alt=""
-							style="width: 15px; position: relative; top: 5px; margin-right: 5px;"></el-image>
-						<b style="color: #FFF;" v-show="logoTextShow">超市订单管理系统</b>
+						<el-image src="https://t.tutu.to/img/UdQtn" alt=""
+							style="width: 20px; position: relative; top: 1px; margin-right: 5px;"></el-image>
+						<b style="color: #FFF;" v-show="logoTextShow">办公自动化系统 </b>
 					</div>
 					<el-menu-item index="/">
 						<el-icon v-show="!logoTextShow" class="iconColor">
@@ -61,7 +61,7 @@
 							</div>
 							<template #dropdown>
 								<el-dropdown-menu>
-									<el-dropdown-item @click="nextInfo">个人信息</el-dropdown-item>
+									<el-dropdown-item @click="router.push('/main/user-info')">个人信息</el-dropdown-item>
 									<el-dropdown-item @click="handleResetPassword">修改密码</el-dropdown-item>
 									<el-dropdown-item @click="userLogout">退出登录</el-dropdown-item>
 								</el-dropdown-menu>
@@ -99,7 +99,7 @@
 <script setup lang="ts">
 	import { ref, onMounted, Menu, watch } from 'vue'
 	import router from '../router';
-	import { HomeFilled, Tools, Files, Van, Wallet, Histogram, Box } from '@element-plus/icons-vue'
+	import { HomeFilled, Tools, Files, Van, Wallet, Histogram, Box, Setting, DataAnalysis } from '@element-plus/icons-vue'
 	import { useMeanStore } from '../store';
 	import { getUserInfo, logout, get } from '../net';
 
@@ -137,28 +137,6 @@
 			router.push("/welcome/login")
 		})
 	}
-	
-	// const newChildRoute = {
-	//   path: 'cs',
-	//   name: 'index-new-child',
-	//   component: () => import('@/components/HelloWorld.vue')
-	// };
-		
-		
-	// // 添加新的孩子节点路由到 index 路由中
-	// const indexRoute = router.options.routes.find(route => route.name === 'index');
-	
-	// if (indexRoute) {
-	//   indexRoute.children = indexRoute.children || [];
-	//   indexRoute.children.push(newChildRoute);
-	  
-	//   // 使用 addRoute 方法来动态添加路由
-	//   router.addRoute('index', newChildRoute);
-	// } else {
-	//   console.error('Index route not found');
-	// }
-	
-	// console.log(router.getRoutes())
 
 	function collape() {
 		isCollapse.value = !isCollapse.value;
@@ -174,8 +152,18 @@
 	watch(
 		() => ({
 			route: router.currentRoute.value,
+			force: meanStore.force,
+			face: meanStore.face,
 		}), (newValue, oldValue) => {
 			breadList.value = [{ path: newValue.route.path, name: newValue.route.name }];
+			if (newValue.force) {
+				meanStore.setForce(false)
+				router.push('/')
+			}
+			if (newValue.face) {
+				meanStore.setFace(false)
+				initializePage(false)
+			}
 		}, { immediate: true, deep: true }
 	);
 </script>

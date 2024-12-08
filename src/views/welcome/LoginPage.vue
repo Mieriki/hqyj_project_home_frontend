@@ -1,7 +1,7 @@
 <template>
 	<div class="formsy" style="height: 100%; text-align: center; margin: 0 30px;">
 		<div style="margin-top: 75px;">
-			<div style="font-size: 27px; font-weight: bold;">进销存管理系统</div>
+			<div style="font-size: 27px; font-weight: bold;">自动化办公系统</div>
 			<div style="font-size: 12px; color: gray; margin-top: 5px;">在进入系统之前，请先输入用户名和密码登录</div>
 		</div>
 		<div style="margin-top: 50px;">

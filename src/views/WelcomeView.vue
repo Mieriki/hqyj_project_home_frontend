@@ -1,8 +1,8 @@
 <template>
 	<div class="soto">
 		<div class="sotu-back" style="overflow: hidden; width: 100vw; height: 100vh;"></div>
-		<!-- <div id="sakana-widget-chisato" class="sakana" style="bottom: 10%; right: 10vw; transform: translate(-50%, -50%);"></div> -->
-		<!-- <div id="sakana-widget-takina" class="sakana"  style="bottom: 10%; left: 10vw; transform: translate(-50%, -50%);"></div> -->
+		<div id="sakana-widget-chisato" class="sakana" style="bottom: 10%; right: 10vw; transform: translate(-50%, -50%);"></div>
+		<div id="sakana-widget-takina" class="sakana"  style="bottom: 10%; left: 10vw; transform: translate(-50%, -50%);"></div>
 		<div class="right-card">
 			<router-view v-slot="{ Component }">
 			    <transition name="el-fade-in-linear" mode="out-in">
@@ -18,45 +18,45 @@ import 'sakana-widget/lib/index.css';
 import { onMounted } from 'vue';
 import SakanaWidget from 'sakana-widget';
 
-// onMounted(() => {
-// const widget = new SakanaWidget({
-//     size: 200, // 设置小部件的尺寸为 20px × 20px
-//     autoFit: true, // 启用自动适应大小，小部件将根据容器自动缩放
-//     character: 'takina', // 使用角色 'chisato' takina
-//     controls: false, // 显示控制栏
-//     rod: true, // 显示弹簧杆
-//     draggable: true, // 可拖动小部件
-//     stroke: {
-//       color: '#b4b4b4', // 设置描边颜色为灰色
-//       width: 10 // 设置描边宽度为 10px
-//     },
-//     threshold: 0.1, // 运动停止阈值
-//     rotate: 0, // 初始旋转角度为 0 度
-//     title: true // 禁用标题
-//   });
+onMounted(() => {
+const widget = new SakanaWidget({
+    size: 200, // 设置小部件的尺寸为 20px × 20px
+    autoFit: true, // 启用自动适应大小，小部件将根据容器自动缩放
+    character: 'takina', // 使用角色 'chisato' takina
+    controls: false, // 显示控制栏
+    rod: true, // 显示弹簧杆
+    draggable: true, // 可拖动小部件
+    stroke: {
+      color: '#b4b4b4', // 设置描边颜色为灰色
+      width: 10 // 设置描边宽度为 10px
+    },
+    threshold: 0.1, // 运动停止阈值
+    rotate: 0, // 初始旋转角度为 0 度
+    title: true // 禁用标题
+  });
 
-//   widget.mount('#sakana-widget-chisato');
-// });
+  widget.mount('#sakana-widget-chisato');
+});
 
-// onMounted(() => {
-// const widget = new SakanaWidget({
-//     size: 200, // 设置小部件的尺寸为 20px × 20px
-//     autoFit: true, // 启用自动适应大小，小部件将根据容器自动缩放
-//     character: 'chisato', // 使用角色 'chisato' takina
-//     controls: false, // 显示控制栏
-//     rod: true, // 显示弹簧杆
-//     draggable: true, // 可拖动小部件
-//     stroke: {
-//       color: '#b4b4b4', // 设置描边颜色为灰色
-//       width: 10 // 设置描边宽度为 10px
-//     },
-//     threshold: 0.1, // 运动停止阈值
-//     rotate: 0, // 初始旋转角度为 0 度
-//     title: true // 禁用标题
-//   });
+onMounted(() => {
+const widget = new SakanaWidget({
+    size: 200, // 设置小部件的尺寸为 20px × 20px
+    autoFit: true, // 启用自动适应大小，小部件将根据容器自动缩放
+    character: 'chisato', // 使用角色 'chisato' takina
+    controls: false, // 显示控制栏
+    rod: true, // 显示弹簧杆
+    draggable: true, // 可拖动小部件
+    stroke: {
+      color: '#b4b4b4', // 设置描边颜色为灰色
+      width: 10 // 设置描边宽度为 10px
+    },
+    threshold: 0.1, // 运动停止阈值
+    rotate: 0, // 初始旋转角度为 0 度
+    title: true // 禁用标题
+  });
 
-//   widget.mount('#sakana-widget-takina');
-// });
+  widget.mount('#sakana-widget-takina');
+});
 </script>
 
 <style scoped>

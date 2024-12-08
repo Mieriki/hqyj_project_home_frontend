@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ElMessage, MessageParamsWithType } from "element-plus";
 import 'element-plus/dist/index.css'
+import { useMeanStore } from "../store";
 
 const authItemName = "authorize"
 
@@ -64,7 +65,11 @@ const getMenuRouter = () => {
 function analysisCode(code: number) {
 	if (code === 200) {
 		return true
-	} 
+	} else if (code === 603) {
+		deleteAccessToken()
+		const meanStore = useMeanStore()
+		meanStore.setForce(true)
+	}
 	return false
 }
 

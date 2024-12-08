@@ -9,6 +9,8 @@ const useMeanStore = defineStore('main', () => {
 	const permList = ref([])
 	const hasRoute = ref(false)
 	const userInfo = ref({})
+	const force = ref(false)
+	const face = ref(false)
 	
 	function setPiniaLabel(mieriki: string) {
 		helloPinia.value = mieriki
@@ -33,6 +35,14 @@ const useMeanStore = defineStore('main', () => {
 		console.log('set user', userInfo)
 	}
 	
+	function setForce(newForce) {
+		force.value = newForce
+	}
+	
+	function setFace(newFace) {
+		face.value = newFace
+	}
+	
 	return {
 		helloPinia,
 		menuList,
@@ -43,7 +53,11 @@ const useMeanStore = defineStore('main', () => {
 		changeRouteStatus,
 		setMenuList,
 		setPermList,
-		setUserInfo
+		setUserInfo,
+		force,
+		setForce,
+		face,
+		setFace
 	}
 })
 

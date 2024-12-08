@@ -1,5 +1,4 @@
 <template>
-	
 	<el-row style="height: 100%;">
 		<el-col :span="4">
 			<el-card style="height: 80vh;">
