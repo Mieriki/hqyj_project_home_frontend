@@ -61,7 +61,7 @@
 							</div>
 							<template #dropdown>
 								<el-dropdown-menu>
-									<el-dropdown-item @click="nextInfo">个人信息</el-dropdown-item>
+									<el-dropdown-item @click="initializePage">个人信息</el-dropdown-item>
 									<el-dropdown-item @click="handleResetPassword">修改密码</el-dropdown-item>
 									<el-dropdown-item @click="userLogout">退出登录</el-dropdown-item>
 								</el-dropdown-menu>
@@ -179,6 +179,7 @@
       }), (newValue, oldValue) => {
         breadList.value = [{ path: newValue.route.path, name: newValue.route.name }];
         if (newValue.force) {
+          console.log('force change')
           meanStore.setForce(false)
           router.push('/')
         }
