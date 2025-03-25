@@ -45,22 +45,20 @@
 		<el-table-column type="selection" width="55"/>
 		<el-table-column label="头像" fixed width="55">
 			<template #default="scope">
-				<el-avatar :src="scope.row.userFace" :size="30"></el-avatar>	
+				<el-avatar :src="scope.row.picture" :size="30"></el-avatar>
 			</template>
 		</el-table-column>
-		<el-table-column prop="id" label="用户编号" width="85">
+    <el-table-column prop="account" label="用户名" width="100">
+    </el-table-column>
+		<el-table-column prop="username" label="姓名" width="100">
 		</el-table-column>
-		<el-table-column prop="name" label="姓名" width="100">
-		</el-table-column>
-		<el-table-column prop="userName" label="用户名" width="100">
-		</el-table-column>
-		<el-table-column prop="telephone" label="住宅电话" width="120">
-		</el-table-column>
+		<el-table-column prop="genderStr" label="性别" width="60">
+    </el-table-column>
 		<el-table-column prop="phone" label="电话" width="140">
 		</el-table-column>
-		<el-table-column prop="address" label="地址" width="180">
+		<el-table-column prop="email" label="邮箱" width="180">
 		</el-table-column>
-		<el-table-column prop="remark" label="备注" width="160">
+		<el-table-column prop="introduction" label="备注" width="270">
 		</el-table-column>
 		<el-table-column label="操作" fixed="right">
 			<template #default="scope">
@@ -119,29 +117,36 @@
 		width=620
 	    :before-close="handleClose">
 		<el-form :model="admin" :rules="rules" ref="formRef" label-width="100px">
+      <el-form-item label="用户名" prop="account" style="width: 400px; margin-top: 20px;">
+        <el-input v-model="admin.account"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="password" style="width: 400px; margin-top: 20px;">
+        <el-input v-model="admin.password"></el-input>
+      </el-form-item>
 			<el-row>
-				<el-col :span="10">
-					<el-form-item label="姓名" prop="name" style="width: 260px; margin-top: 20px;">
-						<el-input v-model="admin.name"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="10">
-					<el-form-item label="用户名" prop="userName" style="width: 260px; margin-top: 20px;">
-						<el-input v-model="admin.userName"></el-input>
-					</el-form-item>
-				</el-col>
+        <el-col :span="9">
+          <el-form-item label="姓名" prop="username" style="width: 260px; margin-top: 20px;">
+            <el-input v-model="admin.username"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item label="性别" prop="gender" style="width: 260px; margin-top: 20px;">
+            <el-select v-model="admin.gender" placeholder="保密" >
+              <el-option label="保密" :value="0" :key="0"></el-option>
+              <el-option label="男" :value="1" :key="1"></el-option>
+              <el-option label="女" :value="2" :key="2"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
 			</el-row>
-			<el-form-item label="住宅电话" prop="telephone" style="width: 400px;">
-				<el-input v-model="admin.telephone"></el-input>
-			</el-form-item>
 			<el-form-item label="电话" prop="phone" style="width: 400px; margin-top: 20px;">
 				<el-input v-model="admin.phone"></el-input>
 			</el-form-item>
-			<el-form-item label="联系地址" prop="address" style="width: 505px; margin-top: 20px;">
-				<el-input v-model="admin.address"></el-input>
+			<el-form-item label="邮箱" prop="email" style="width: 505px; margin-top: 20px;">
+				<el-input v-model="admin.email"></el-input>
 			</el-form-item>
-			<el-form-item label="备注" prop="remark" style="width: 505px; margin-top: 20px;">
-				<el-input v-model="admin.remark"></el-input>
+			<el-form-item label="备注" prop="introduction" style="width: 505px; margin-top: 20px;">
+				<el-input v-model="admin.introduction"></el-input>
 			</el-form-item>
 			<el-row style="display: flex; justify-content: center; align-items: center; ">
 				<el-button type="primary" style="width: 200px; margin-top: 20px;" @click="addSubmitForm">新增</el-button>
@@ -156,30 +161,31 @@
 		width=620
 	    :before-close="handleClose">
 		<el-form :model="admin" :rules="rules" ref="formRef" label-width="100px">
-			<el-row>
-				<el-col :span="10">
-					<el-form-item label="姓名" prop="name" style="width: 260px; margin-top: 20px;">
-						<el-input v-model="admin.name"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="10">
-					<el-form-item label="用户名" prop="userName" style="width: 260px; margin-top: 20px;">
-						<el-input v-model="admin.userName"></el-input>
-					</el-form-item>
-				</el-col>
-			</el-row>
-			<el-form-item label="住宅电话" prop="telephone" style="width: 400px;">
-				<el-input v-model="admin.telephone"></el-input>
-			</el-form-item>
-			<el-form-item label="电话" prop="phone" style="width: 400px; margin-top: 20px;">
-				<el-input v-model="admin.phone"></el-input>
-			</el-form-item>
-			<el-form-item label="联系地址" prop="address" style="width: 505px; margin-top: 20px;">
-				<el-input v-model="admin.address"></el-input>
-			</el-form-item>
-			<el-form-item label="备注" prop="remark" style="width: 505px; margin-top: 20px;">
-				<el-input v-model="admin.remark"></el-input>
-			</el-form-item>
+      <el-row>
+        <el-col :span="9">
+          <el-form-item label="姓名" prop="username" style="width: 260px; margin-top: 20px;">
+            <el-input v-model="admin.username"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item label="性别" prop="gender" style="width: 260px; margin-top: 20px;">
+            <el-select v-model="admin.gender" placeholder="保密" >
+              <el-option label="保密" :value="0" :key="0"></el-option>
+              <el-option label="男" :value="1" :key="1"></el-option>
+              <el-option label="女" :value="2" :key="2"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-form-item label="电话" prop="phone" style="width: 400px; margin-top: 20px;">
+        <el-input v-model="admin.phone"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱" prop="email" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="admin.email"></el-input>
+      </el-form-item>
+      <el-form-item label="备注" prop="introduction" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="admin.introduction"></el-input>
+      </el-form-item>
 			<el-row style="display: flex; justify-content: center; align-items: center; ">
 				<el-button type="primary" style="width: 200px; margin-top: 20px;" @click="editSubmitForm">修改</el-button>
 				<el-button type="info" style="width: 200px; margin-top: 20px; margin-left: 60px;" @click="handleClose">取消</el-button>
@@ -244,34 +250,6 @@
 		pageSize: 10
 	})
 
-  /*
-  * "adminList": [
-            {
-                "id": 1,
-                "account": "admin",
-                "username": "超级管理员",
-                "deptId": 0,
-                "userType": 0,
-                "gender": true,
-                "birthDate": "2025-03-13T10:23:30.000+00:00",
-                "picture": "https://cdn.jsdelivr.net/gh/Mieriki/SuperMkFileServe/2024/08/28713d0b7836ea4b549762b2bfc4684451.png",
-                "education": "",
-                "phone": "18220884659",
-                "email": "mieriki@163.com",
-                "strong": "",
-                "introduction": "",
-                "userRank": 0,
-                "lastLoginIp": "127.0.0.1",
-                "lastLoginDate": null,
-                "status": "",
-                "openId": "",
-                "schedulingFlag": 0,
-                "delFlag": false,
-                "createDate": "2025-03-13T10:24:41.000+00:00",
-                "updateDate": "2025-03-13T10:24:41.000+00:00",
-                "createBy": "",
-                "updateBy": ""
-            }*/
 	let admin = reactive({
 		id: null,
 		account: '',
@@ -279,7 +257,7 @@
     password: '',
     deptId: null,
 		userType: null,
-		gender: null,
+		gender: 0,
 		birthDate: null,
 		picture: '',
 		education: '',
@@ -291,13 +269,7 @@
 		lastLoginIp: '',
 		lastLoginDate: null,
 		status: '',
-		openId: '',
 		schedulingFlag: null,
-		delFlag: null,
-		createDate: null,
-		updateDate: null,
-		createBy: '',
-		updateBy: '',
 	});
 
 	
@@ -315,7 +287,10 @@
 	// 初始化页面数据
 	function initializePage() {
 		post(`/sso/users/get`, searchValue, (data) => {
-			adminList.value = data.adminList
+			adminList.value = data.adminList.map(item => {
+        item.genderStr = item.gender === 1 ? '男' : (item.gender === 2 ? '女' : '保密')
+        return item
+      })
 			count.value = data.count
 		})
 		handleClose()
@@ -326,20 +301,32 @@
 		editDialogVisible.value = false
 		roleDialogVisible.value = false
 		admin.id = null
-		admin.name = ''
-		admin.phone = ''
-		admin.telephone = ''
-		admin.address = ''
-		admin.enabled = null
-		admin.userName = ''
-		admin.userFace = ''
-		admin.remark = ''
-		admin.slot = ''
+    admin.account = ''
+    admin.username = ''
+    admin.password = ''
+    admin.deptId = null
+    admin.userType = null
+    admin.gender = 0
+    admin.birthDate = null
+    admin.picture = ''
+    admin.education = ''
+    admin.phone = ''
+    admin.email = ''
+    admin.strong = ''
+    admin.introduction = ''
+    admin.userRank = null
+    admin.lastLoginIp = ''
+    admin.lastLoginDate = null
+    admin.status = ''
+    admin.schedulingFlag = null
 	}
 	
 	const handleEnabled = (row) => {
 		row.enabled = !row.enabled
-		post(`/sso/users/put/enabled`, row, () => {
+		post(`/sso/users/put/enabled`, {
+        id: row.id,
+        enabled: row.enabled
+    }, () => {
 			if(row.enabled) {
 				ElMessage.success('已启用')
 			} else {
@@ -393,22 +380,31 @@
 	
 	function handleEdit(row) {
 		admin.id = row.id
-		admin.name = row.name
+		admin.account = row.account
+		admin.username = row.username
+		admin.password = row.password
+		admin.deptId = row.deptId
+		admin.userType = row.userType
+		admin.gender = row.gender
+		admin.birthDate = row.birthDate
+		admin.picture = row.picture
+		admin.education = row.education
 		admin.phone = row.phone
-		admin.telephone = row.telephone
-		admin.address = row.address
-		admin.enabled = row.enabled
-		admin.userName = row.userName
-		admin.userFace = row.userFace
-		admin.remark = row.remark
-		admin.slot = row.slot
-		editDialogVisible.value = true
+		admin.email = row.email
+		admin.strong = row.strong
+		admin.introduction = row.introduction
+		admin.userRank = row.userRank
+		admin.lastLoginIp = row.lastLoginIp
+		admin.lastLoginDate = row.lastLoginDate
+		admin.status = row.status
+		admin.schedulingFlag = row.schedulingFlag
+    editDialogVisible.value = true
 	}
 	
 	function addSubmitForm() {
 	    formRef.value.validate((valid) => {
 	        if (valid) {
-				post(`/sso/users/post`, admin, () => {
+				post(`/sso/users/post/signup`, admin, () => {
 					ElMessage.success('添加成功!')
 					initializePage()
 				})
@@ -461,28 +457,29 @@
 	}
 	
 	const rules = {
-	    name: [
-			{ required: true, message: '请输入姓名', trigger: 'blur' },
-			{ max: 50, message: '姓名长度不能超过50个字符', trigger: 'blur' }
-	    ],
-	    userName: [
-			{ required: true, message: '请输入用户名', trigger: 'blur' },
-			{ max: 20, message: '用户名长度不能超过20个字符', trigger: 'blur' }
-	    ],
-	    telephone: [
-	        { pattern: /^\d+$/, message: '请输入正确的住宅电话，只能包含数字', trigger: 'blur' }
-	    ],
-	    phone: [
-	        { required: true, message: '请输入电话号码', trigger: 'blur' },
-	        { pattern: /^(13|18|19)\d{9}$/, message: '请输入正确的11位手机号码', trigger: 'blur' }
-	    ],
-	    address: [
-			{ required: true, message: '请输入请输入地址', trigger: 'blur' },
-			{ max: 100, message: '地址长度不能超过100个字符', trigger: 'blur' }
-	    ],
-	    remark: [
-			{ max: 200, message: '备注长度不能超过200个字符', trigger: 'blur' }
-	    ]
+    username: [
+      { required: true, message: '请输入姓名', trigger: 'blur' },
+      { max: 50, message: '姓名长度不能超过50个字符', trigger: 'blur' }
+    ],
+    account: [
+      { required: true, message: '请输入用户名', trigger: 'blur' },
+      { max: 20, message: '用户名长度不能超过20个字符', trigger: 'blur' }
+    ],
+    phone: [
+      { required: true, message: '请输入电话号码', trigger: 'blur' },
+      { pattern: /^(13|18|19)\d{9}$/, message: '请输入正确的11位手机号码', trigger: 'blur' }
+    ],
+    email: [
+      { required: true, message: '请输入邮箱', trigger: 'blur' },
+      { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
+    ],
+    address: [
+      { required: true, message: '请输入请输入地址', trigger: 'blur' },
+      { max: 100, message: '地址长度不能超过100个字符', trigger: 'blur' }
+    ],
+    remark: [
+      { max: 200, message: '备注长度不能超过200个字符', trigger: 'blur' }
+    ]
 	};
 </script>
 

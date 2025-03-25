@@ -68,21 +68,34 @@ function analysisCode(code: number) {
 	return false
 }
 
+function  requestHandler(url: string, data: any, success: (arg0: any) => void, failure: { (message: MessageParamsWithType, status: any, url: any): void; (arg0: any, arg1: any, arg2: any): void; }) {
+    console.log('data',　data)
+    if (analysisCode(data.code)) {
+        success(data.data)
+    } else if (data.code === 603) {
+        deleteAccessToken()
+        failure("该账号已被禁用，请联系管理员!", data.code, url)
+    } else if (data.code === 401) {
+        if (!unauthorized()) {
+            deleteAccessToken()
+            failure("登录状态已过期，请重新登录！", data.code, url)
+            return
+        }
+        failure(data.message, data.code, url)
+    } else {
+        failure(data.message, data.code, url)
+    }
+}
+
 function internalPost(url: string, data: any, headers: {}, success: (arg0: any) => void, failure: { (message: MessageParamsWithType, status: any, url: any): void; (arg0: any, arg1: any, arg2: any): void; }, error = defaultError){
     axios.post(url, data, { headers: headers }).then(({data}) => {
-        if(analysisCode(data.code))
-            success(data.data)
-        else
-            failure(data.message, data.code, url)
+        requestHandler(url, data, success, failure)
     }).catch(err => error(err))
 }
 
 function internalGet(url: string, headers: {}, success: (arg0: any) => void, failure: { (message: MessageParamsWithType, status: any, url: any): void; (arg0: any, arg1: any, arg2: any): void; }, error = defaultError){
     axios.get(url, { headers: headers }).then(({data}) => {
-        if(analysisCode(data.code))
-            success(data.data)
-        else
-            failure(data.message, data.code, url)
+        requestHandler(url, data, success, failure)
     }).catch(err => error(err))
 }
 
