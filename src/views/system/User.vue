@@ -6,7 +6,7 @@
 					<el-button @click="handleSearch" :icon="Search" />
 				</template>
 			</el-input>
-			<el-input v-model="searchValue.address" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入地址" type="text"></el-input>
+<!--			<el-input v-model="searchValue.address" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入地址" type="text"></el-input>-->
 			<el-button  @click="handleSearch" style="margin-left: 5px; width: 75px; height: 32px;" size="small" type="primary">搜索</el-button>
 			
 			<el-button type="primary" style="width: 80px; height: 32px;" size="small" @click="nextAdd">新增<el-icon><CirclePlus /></el-icon></el-button>
@@ -243,25 +243,68 @@
 		currentPage: 1,
 		pageSize: 10
 	})
-	
+
+  /*
+  * "adminList": [
+            {
+                "id": 1,
+                "account": "admin",
+                "username": "超级管理员",
+                "deptId": 0,
+                "userType": 0,
+                "gender": true,
+                "birthDate": "2025-03-13T10:23:30.000+00:00",
+                "picture": "https://cdn.jsdelivr.net/gh/Mieriki/SuperMkFileServe/2024/08/28713d0b7836ea4b549762b2bfc4684451.png",
+                "education": "",
+                "phone": "18220884659",
+                "email": "mieriki@163.com",
+                "strong": "",
+                "introduction": "",
+                "userRank": 0,
+                "lastLoginIp": "127.0.0.1",
+                "lastLoginDate": null,
+                "status": "",
+                "openId": "",
+                "schedulingFlag": 0,
+                "delFlag": false,
+                "createDate": "2025-03-13T10:24:41.000+00:00",
+                "updateDate": "2025-03-13T10:24:41.000+00:00",
+                "createBy": "",
+                "updateBy": ""
+            }*/
 	let admin = reactive({
 		id: null,
-		name: '',
+		account: '',
+		username: '',
+    password: '',
+    deptId: null,
+		userType: null,
+		gender: null,
+		birthDate: null,
+		picture: '',
+		education: '',
 		phone: '',
-		telephone: '',
-		address: '',
-		enabled: null,
-		userName: '',
-		userFace: '',
-		remark: '',
-		slot: ''
+		email: '',
+		strong: '',
+		introduction: '',
+		userRank: null,
+		lastLoginIp: '',
+		lastLoginDate: null,
+		status: '',
+		openId: '',
+		schedulingFlag: null,
+		delFlag: null,
+		createDate: null,
+		updateDate: null,
+		createBy: '',
+		updateBy: '',
 	});
 
 	
 	let fileName = ref("multipartFiles")
 	let headers =ref(accessHeader())
 	let fileList =ref([])
-	let postUrl = ref("http://localhost:8000/mugen/api/admins/post/excel")
+	let postUrl = ref("http://mieriki.net/mugen/api/sso/users/post/excel")
 		
 	const formRef = ref()
 	// 页面初始化加载数据
@@ -271,7 +314,7 @@
 	
 	// 初始化页面数据
 	function initializePage() {
-		post(`/admins/get`, searchValue, (data) => {
+		post(`/sso/users/get`, searchValue, (data) => {
 			adminList.value = data.adminList
 			count.value = data.count
 		})
@@ -296,7 +339,7 @@
 	
 	const handleEnabled = (row) => {
 		row.enabled = !row.enabled
-		post(`/admins/put/enabled`, row, () => {
+		post(`/sso/users/put/enabled`, row, () => {
 			if(row.enabled) {
 				ElMessage.success('已启用')
 			} else {
@@ -365,7 +408,7 @@
 	function addSubmitForm() {
 	    formRef.value.validate((valid) => {
 	        if (valid) {
-				post(`/admins/post`, admin, () => {
+				post(`/sso/users/post`, admin, () => {
 					ElMessage.success('添加成功!')
 					initializePage()
 				})
@@ -380,7 +423,7 @@
 	function editSubmitForm() {
 		formRef.value.validate((valid) => {
 			if(valid) {
-				post('/admins/put', admin, () => {
+				post('/sso/users/put', admin, () => {
 					ElMessage.success('修改成功!')
 					initializePage()
 				})
@@ -391,21 +434,21 @@
 	}
 	
 	function handleDelete(row) {
-		get(`/admins/delete/${row.id}`, () => {
+		get(`/sso/users/delete/${row.id}`, () => {
 			ElMessage.success('删除成功!')
 			initializePage()
 		})
 	}
 	
 	function handleDeleteList() {
-		post(`/admins/delete`, selectedRowList.value.map(row => row.id), () => {
+		post(`/sso/users/delete`, selectedRowList.value.map(row => row.id), () => {
 			ElMessage.success('删除成功!')
 			initializePage()
 		})
 	}
 	
 	function exportData() {
-		window.open(`http://localhost:8000/mugen/api/admins/get/excel`)
+		window.open(`http://mieriki.net/mugen/api/sso/users/get/excel`)
 	}
 	
 	function uploadSuccess(data) {

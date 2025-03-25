@@ -16,7 +16,7 @@
 					<div style="display: flex; align-items: center; justify-content: center; height: 60px;">
 						<el-image src="https://t.tutu.to/img/mZhyw" alt=""
 							style="width: 15px; position: relative; top: 5px; margin-right: 5px;"></el-image>
-						<b style="color: #FFF;" v-show="logoTextShow">超市订单管理系统</b>
+						<b style="color: #FFF;" v-show="logoTextShow">Mugen医疗云平台</b>
 					</div>
 					<el-menu-item index="/">
 						<el-icon v-show="!logoTextShow" class="iconColor">
@@ -55,9 +55,9 @@
 					<div class="dropdown-container">
 						<el-dropdown>
 							<div class="dropdown-content">
-								<span style="margin-right: 5px; font-size: 14px;"> {{ user.name }} </span>
+								<span style="margin-right: 5px; font-size: 14px;"> {{ user.username }} </span>
 								<!-- <el-icon><User /></el-icon> -->
-								<el-avatar :src="user.userFace" :size="25"></el-avatar>
+								<el-avatar :src="user.picture" :size="25"></el-avatar>
 							</div>
 							<template #dropdown>
 								<el-dropdown-menu>
@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, onMounted, Menu, watch } from 'vue'
+	import { ref, onMounted, watch } from 'vue'
 	import router from '../router';
 	import { HomeFilled, Tools, Files, Van, Wallet, Histogram, Box } from '@element-plus/icons-vue'
 	import { useMeanStore } from '../store';
@@ -115,11 +115,11 @@
 	const user = ref({})
 	
 	function initializePage() {
-		get(`/admins/get/me`, (data) => {
+		get(`/sso/users/get/me`, (data) => {
 			user.value = data
 			meanStore.setUserInfo(data)
 		})
-		get(`/menus/get/router`, (data) => {
+		get(`/sso/menus/get/router`, (data) => {
 			menuList.value = data
 			meanStore.setMenuList(data)
 		})

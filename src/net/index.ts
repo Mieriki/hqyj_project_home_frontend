@@ -55,7 +55,7 @@ function deleteAccessToken() {
 
 const getMenuRouter = () => {
 	return new Promise<any>((resolve, reject) => {
-		get(`/menus/get/router`, (data) => {
+		get(`/sso/menus/get/router`, (data) => {
 			resolve(data); 
 		})
 	});	
@@ -96,7 +96,7 @@ function get(url: string, success: (arg0: any) => void, failure = defaultFailure
 
 function getUserInfo() {
 	return new Promise<any>((resolve, reject) => {
-		get(`/admins/get/me`, (data) => {
+		get(`/sso/users/get/me`, (data) => {
 			console.log('user', data)
 			resolve(data); 
 		}) 
@@ -104,7 +104,7 @@ function getUserInfo() {
 }
 
 function login(username, password, remember, success, failure = defaultFailure){
-    internalPost('/auth/login', {
+    internalPost('/sso/auth/login', {
         username: username,
         password: password
     }, {
@@ -118,7 +118,7 @@ function login(username, password, remember, success, failure = defaultFailure){
 }
 
 function logout(success, failure = defaultFailure){
-    get('/auth/logout', () => {
+    get('/sso/auth/logout', () => {
         deleteAccessToken()
         ElMessage.success(`退出登录成功，欢迎您再次使用`)
         success()
