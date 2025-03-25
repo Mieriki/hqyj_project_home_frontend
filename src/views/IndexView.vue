@@ -170,14 +170,24 @@
 			logoTextShow.value = true;
 		}
 	}
-	
-	watch(
-		() => ({
-			route: router.currentRoute.value,
-		}), (newValue, oldValue) => {
-			breadList.value = [{ path: newValue.route.path, name: newValue.route.name }];
-		}, { immediate: true, deep: true }
-	);
+
+  watch(
+      () => ({
+        route: router.currentRoute.value,
+        force: meanStore.force,
+        face: meanStore.face,
+      }), (newValue, oldValue) => {
+        breadList.value = [{ path: newValue.route.path, name: newValue.route.name }];
+        if (newValue.force) {
+          meanStore.setForce(false)
+          router.push('/')
+        }
+        if (newValue.face) {
+          meanStore.setFace(false)
+          initializePage(false)
+        }
+      }, { immediate: true, deep: true }
+  );
 </script>
 
 <style scoped>

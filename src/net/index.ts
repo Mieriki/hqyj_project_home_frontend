@@ -74,7 +74,9 @@ function  requestHandler(url: string, data: any, success: (arg0: any) => void, f
         success(data.data)
     } else if (data.code === 603) {
         deleteAccessToken()
-        failure("该账号已被禁用，请联系管理员!", data.code, url)
+        // failure("该账号已被禁用，请联系管理员!", data.code, url)
+        const meanStore = useMeanStore();
+        meanStore.setForce(true);
     } else if (data.code === 401) {
         if (!unauthorized()) {
             deleteAccessToken()
