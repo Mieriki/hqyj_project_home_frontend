@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ElMessage, MessageParamsWithType } from "element-plus";
 import 'element-plus/dist/index.css'
+import { useMeanStore } from "../store";
 
 const authItemName = "authorize"
 

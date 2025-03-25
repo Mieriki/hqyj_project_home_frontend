@@ -181,7 +181,7 @@
         if (newValue.force) {
           console.log('force change')
           meanStore.setForce(false)
-          router.push('/')
+          router.push('/welcome/login')
         }
         if (newValue.face) {
           meanStore.setFace(false)
