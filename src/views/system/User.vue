@@ -229,7 +229,7 @@
 	import { Search } from '@element-plus/icons-vue';
 	import { get, post, accessHeader } from '@/net';
 	import router from '@/router';
-	import { useMeanStore } from '../../store';
+  import { useMeanStore } from '@/store';
 	
 	const meanStore = useMeanStore()
 	

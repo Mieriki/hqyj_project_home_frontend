@@ -71,8 +71,7 @@
     <el-table-column label="排序" width="120">
       <template #default="scope">
         <el-row>
-          <IconButton :show-shine="false" @click="sortUp(scope.row)"><ArrowUpBold /></IconButton>
-          <span style="width: 10px;"></span>
+          <IconButton :show-shine="false" @click="sortUp(scope.row)" style="margin-right: 10px;"><ArrowUpBold /></IconButton>
           <IconButton :show-shine="false" @click="sortDown(scope.row)"><ArrowDownBold /></IconButton>
         </el-row>
 
@@ -186,10 +185,14 @@ import {
 } from '@element-plus/icons-vue';
 import {get, post, accessHeader} from '@/net';
 import router from '@/router';
+import { useMeanStore } from '@/store';
 
 import IconButton from "@/components/IconButton.vue";
 
 let menuList = ref([]);
+
+const meanStore = useMeanStore();
+
 const addDialogVisible = ref(false)
 const editDialogVisible = ref(false)
 
@@ -350,6 +353,7 @@ function exportData() {
 function sortUp(row) {
   get(`/sso/menus/get/sort/up/${row.id}`, () => {
     ElMessage.success('上移成功!')
+    meanStore.setFace(true)
     initializePage()
   })
 }
@@ -357,6 +361,7 @@ function sortUp(row) {
 function sortDown(row) {
   get(`/sso/menus/get/sort/down/${row.id}`, () => {
     ElMessage.success('下移成功!')
+    meanStore.setFace(true)
     initializePage()
   })
 }

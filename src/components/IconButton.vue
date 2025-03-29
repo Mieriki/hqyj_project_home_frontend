@@ -18,23 +18,22 @@ defineEmits<{
   (e: 'click', event: MouseEvent): void
 }>()
 
-// 增强颜色处理函数（支持所有合法格式）
 const hoverColor = computed(() => {
   try {
     const hex = props.primaryColor
         .replace(/[^0-9a-f]/gi, '')
         .padEnd(6, '0')
-        .slice(0, 6);
+        .slice(0, 6)
 
-    const channels = hex.match(/.{2}/g)?.map(v => parseInt(v, 16)) || [0, 0, 0];
+    const channels = hex.match(/.{2}/g)?.map(v => parseInt(v, 16)) || [0, 0, 0]
 
     return `rgb(
       ${Math.max(0, Math.min(255, Math.round(channels[0] * 0.8)))},
       ${Math.max(0, Math.min(255, Math.round(channels[1] * 0.8)))},
       ${Math.max(0, Math.min(255, Math.round(channels[2] * 0.8)))}
-    )`;
+    )`
   } catch {
-    return '#337ecc';
+    return '#337ecc'
   }
 })
 
@@ -74,6 +73,8 @@ const hoverColor = computed(() => {
   --primary-color: v-bind('props.primaryColor');
   --hover-color: v-bind('hoverColor');
 
+  display: inline-block;
+  vertical-align: middle;
   position: relative;
   border: none;
   background: none;
@@ -82,26 +83,39 @@ const hoverColor = computed(() => {
   width: var(--button-size);
   height: var(--button-size);
   outline: none;
-  overflow: visible;
+  line-height: 0;
+  box-sizing: border-box;
 }
 
 .button-core {
-  position: relative;
   width: 100%;
   height: 100%;
+  position: relative;
   transition: transform 0.2s ease;
+}
+
+.button-core::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  z-index: 1;
 }
 
 .button-background {
   position: absolute;
-  inset: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   background-color: var(--primary-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .button-background::after {
@@ -114,7 +128,7 @@ const hoverColor = computed(() => {
   background: linear-gradient(
       45deg,
       transparent 35%,
-      rgba(255,255,255,0.2) 50%,
+      rgba(255, 255, 255, 0.2) 50%,
       transparent 65%
   );
   transform: rotate(45deg);
@@ -124,7 +138,10 @@ const hoverColor = computed(() => {
 }
 
 .button-icon {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 2;
   font-size: var(--icon-size);
   color: white;
@@ -132,35 +149,35 @@ const hoverColor = computed(() => {
   pointer-events: none;
 }
 
-/* 关闭流光效果 */
 .no-shine .button-background::after {
   animation: none !important;
   opacity: 0 !important;
-  transition: opacity 0.3s ease;
 }
 
-/* 悬停效果 */
 .icon-button:hover .button-background {
   background-color: var(--hover-color);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
+  transform: translate(-50%, calc(-50% - 1px));
 }
 
 .icon-button:hover .button-icon {
-  transform: translateY(-1px);
+  transform: translate(-50%, calc(-50% - 1px));
 }
 
-/* 点击效果 */
 .icon-button:active .button-core {
   transform: scale(0.92);
 }
 
 .icon-button:active .button-icon {
-  transform: scale(0.85);
+  transform: translate(-50%, -50%) scale(0.85);
 }
 
 @keyframes v-shine {
-  0% { transform: translateX(-150%) rotate(45deg); }
-  100% { transform: translateX(150%) rotate(45deg); }
+  0% {
+    transform: translateX(-150%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(150%) rotate(45deg);
+  }
 }
 </style>

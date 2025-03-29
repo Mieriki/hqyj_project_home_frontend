@@ -73,21 +73,22 @@ function  requestHandler(url: string, data: any, success: (arg0: any) => void, f
     console.log('data',　data)
     if (analysisCode(data.code)) {
         success(data.data)
+        return
     } else if (data.code === 603) {
         deleteAccessToken()
         failure("该账号已被禁用，请联系管理员!", data.code, url)
         const meanStore = useMeanStore();
         meanStore.setForce(true);
-    } else if (data.code === 401) {
-        if (!unauthorized()) {
-            deleteAccessToken()
-            failure("登录状态已过期，请重新登录！", data.code, url)
-            return
-        }
-        failure(data.message, data.code, url)
-    } else {
-        failure(data.message, data.code, url)
+        return
+    } else if (data.code === 401 && !unauthorized()) {
+        deleteAccessToken()
+        failure("登录状态已过期，请重新登录！", data.code, url)
+        return
+    } else if (data.code === 500) {
+        error(data.message)
+        return
     }
+    failure(data.message, data.code, url)
 }
 
 function internalPost(url: string, data: any, headers: {}, success: (arg0: any) => void, failure: { (message: MessageParamsWithType, status: any, url: any): void; (arg0: any, arg1: any, arg2: any): void; }, error = defaultError){
@@ -102,12 +103,12 @@ function internalGet(url: string, headers: {}, success: (arg0: any) => void, fai
     }).catch(err => error(err))
 }
 
-function post(url: string, data: any, success: (arg0: any) => void, failure = defaultFailure) {
+function post(url: string, data: any, success: (arg0: any) => void, failure = defaultFailure, error = defaultError) {
     internalPost(url, data, accessHeader(), success, failure)
 }
 
-function get(url: string, success: (arg0: any) => void, failure = defaultFailure) {
-    internalGet(url, accessHeader(), success, failure)
+function get(url: string, success: (arg0: any) => void, failure = defaultFailure, error = defaultError) {
+    internalGet(url, accessHeader(), success, failure, error)
 }
 
 function getUserInfo() {

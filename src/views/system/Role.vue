@@ -158,6 +158,7 @@
 	import { get, post, accessHeader } from '@/net';
 	import router from '@/router';
 	import { ElTree } from 'element-plus';
+  import { useMeanStore } from '@/store';
 	
 	let roleList = ref([]);
 	const addDialogVisible = ref(false)
@@ -169,6 +170,8 @@
 	let roleTree = ref([])
 	const checkedKeyList = ref<InstanceType<typeof ElTree>>()
 	const count = ref(0)
+
+  const meanStore = useMeanStore()
 	
 	let searchValue = reactive({
 		name: '',
@@ -237,14 +240,14 @@
 	
 	function handleRole (row: any) {
 		role.id = row.id
-		get(`/menus/get/tree/${row.id}`, (data) => {
+		get(`/sso/menus/get/tree/${row.id}`, (data) => {
 			roleTree.value = data
 			console.log("roleTree", roleTree)
 			roleDialogVisible.value = true
 		})
 		
-		get(`/menus/get/tree/default/${row.id}`, (data) => {
-			checkedKeyList.value = data
+		get(`/sso/menus/get/tree/default/${row.id}`, (data) => {
+			checkedKeyList.value = data.map(item => item.value)
 			console.log("checkedKeyList", checkedKeyList)
 		})
 	} 
@@ -265,12 +268,13 @@
 	
 	const roleSubmitForm = () => {
 		console.log("updata role", treeRef.value!.getCheckedKeys(false))
-		post(`/menus/put/tree`, {
+		post(`/sso/menus/put/tree`, {
 			id: role.id,
 			menuIdList: treeRef.value!.getCheckedKeys(false)
 		}, () => {
 			ElMessage.success("权限分配成功")
 			checkedKeyList.value =  treeRef.value!.getCheckedKeys(false)
+      meanStore.setFace(true)
 			handleClose()
 		})
 	}
