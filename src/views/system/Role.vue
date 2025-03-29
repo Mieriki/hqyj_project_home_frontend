@@ -42,12 +42,14 @@
 	
 	<el-table :data="roleList" border :header-cell-class-name="headerBg" @selection-change="handleSelectionChange" max-height=525>
 		<el-table-column type="selection" width="55"/>
-		<el-table-column prop="id" label="角色编号" width="280">
+		<el-table-column prop="id" label="角色编号" width="200">
 		</el-table-column>
-		<el-table-column prop="name" label="角色" width="310">
+		<el-table-column prop="roleCode" label="角色" width="200">
 		</el-table-column>
-		<el-table-column prop="nameZh" label="角色名称" width="310">
+		<el-table-column prop="roleName" label="角色名称" width="270">
 		</el-table-column>
+    <el-table-column prop="remark" label="备注" width="310">
+    </el-table-column>
 		<el-table-column label="操作" fixed="right">
 			<template #default="scope">
 				<el-button size="small" type="primary" @click="handleRole(scope.row)">分配权限<el-icon><Avatar /></el-icon></el-button>
@@ -86,14 +88,17 @@
 		v-if="addDialogVisible"
 		v-model="addDialogVisible"
 		width=620
-	    :before-close="handleClose">
+    :before-close="handleClose">
 		<el-form :model="role" :rules="rules" ref="formRef" label-width="100px">
-			<el-form-item label="角色" prop="name" style="width: 505px; margin-top: 20px;">
-				<el-input v-model="role.name"></el-input>
+			<el-form-item label="角色" prop="roleCode" style="width: 505px; margin-top: 20px;">
+				<el-input v-model="role.roleCode"></el-input>
 			</el-form-item>
-			<el-form-item label="角色名称" prop="nameZh" style="width: 505px; margin-top: 20px;">
-				<el-input v-model="role.nameZh"></el-input>
+			<el-form-item label="角色名称" prop="roleName" style="width: 505px; margin-top: 20px;">
+				<el-input v-model="role.roleName"></el-input>
 			</el-form-item>
+      <el-form-item label="备注" prop="remark" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="role.remark"></el-input>
+      </el-form-item>
 			<el-row style="display: flex; justify-content: center; align-items: center; ">
 				<el-button type="primary" style="width: 200px; margin-top: 20px;" @click="addSubmitForm">新增</el-button>
 				<el-button type="info" style="width: 200px; margin-top: 20px; margin-left: 60px;" @click="handleClose">取消</el-button>
@@ -107,12 +112,15 @@
 		width=620
 	    :before-close="handleClose">
 		<el-form :model="role" :rules="rules" ref="formRef" label-width="100px">
-			<el-form-item label="角色" prop="name" style="width: 505px; margin-top: 20px;">
-				<el-input v-model="role.name"></el-input>
+			<el-form-item label="角色" prop="roleCode" style="width: 505px; margin-top: 20px;">
+				<el-input v-model="role.roleCode"></el-input>
 			</el-form-item>
-			<el-form-item label="角色名称" prop="nameZh" style="width: 505px; margin-top: 20px;">
-				<el-input v-model="role.nameZh"></el-input>
+			<el-form-item label="角色名称" prop="roleName" style="width: 505px; margin-top: 20px;">
+				<el-input v-model="role.roleName"></el-input>
 			</el-form-item>
+      <el-form-item label="备注" prop="remark" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="role.remark"></el-input>
+      </el-form-item>
 			<el-row style="display: flex; justify-content: center; align-items: center; ">
 				<el-button type="primary" style="width: 200px; margin-top: 20px;" @click="editSubmitForm">修改</el-button>
 				<el-button type="info" style="width: 200px; margin-top: 20px; margin-left: 60px;" @click="handleClose">取消</el-button>
@@ -167,17 +175,20 @@
 		currentPage: 1,
 		pageSize: 10
 	})
-	
+
 	let role = reactive({
 		id: null,
-		name: '',
-		nameZh: ''
-    })
+		roleName: '',
+		roleCode: '',
+		roleSort: 0,
+		status: '',
+		remark: '',
+  })
 	
 	let fileName = ref("multipartFiles")
 	let headers =ref(accessHeader())
 	let fileList =ref([])
-	let postUrl = ref("http://localhost:8000/mugen/api/roles/post/excel")
+	let postUrl = ref("http://mieriki.net/mugen/api/sso/roles/post/excel")
 		
 	const formRef = ref()
 	// 页面初始化加载数据
@@ -187,7 +198,7 @@
 	
 	// 初始化页面数据
 	function initializePage() {
-		post(`/roles/get`,searchValue , (data: any) => {
+		post(`/sso/roles/get`,searchValue , (data: any) => {
 			roleList.value = data.roleList
 			count.value = data.count
 		})
@@ -199,8 +210,11 @@
 		editDialogVisible.value = false
 		roleDialogVisible.value = false
 		role.id = null
-		role.name = ''
-		role.nameZh = ''
+	  role.roleName = ''
+	  role.roleCode = ''
+	  role.roleSort = 0
+	  role.status = ''
+	  role.remark = ''
 	}
 	
 	const handleSearch = () => {
@@ -239,10 +253,13 @@
 		addDialogVisible.value = true
 	}
 	
-	function handleEdit(row: { id: null; name: string; nameZh: string; }) {
+	function handleEdit(row: { id: null; roleName: string; roleCode: string; roleSort: number; status: string; remark: string; }) {
 		role.id = row.id
-		role.name = row.name
-		role.nameZh = row.nameZh
+	  role.roleName = row.roleName
+	  role.roleCode = row.roleCode
+	  role.roleSort = row.roleSort
+	  role.status = row.status
+	  role.remark = row.remark
 		editDialogVisible.value = true
 	}
 	
@@ -261,10 +278,10 @@
 	function addSubmitForm() {
 	    formRef.value.validate((valid: any) => {
 	        if (valid) {
-				post(`/roles/post`, role, () => {
-					ElMessage.success('添加成功!')
-					initializePage()
-				})
+            post(`/sso/roles/post`, role, () => {
+              ElMessage.success('添加成功!')
+              initializePage()
+            })
 	        } else {
 	            // 表单验证失败，不执行提交操作
 	            ElMessage.warning('请完整填写注册表单内容!');
@@ -276,7 +293,7 @@
 	function editSubmitForm() {
 		formRef.value.validate((valid: any) => {
 			if(valid) {
-				post('/roles/put', role, () => {
+				post('/sso/roles/put', role, () => {
 					ElMessage.success('修改成功!')
 					initializePage()
 				})
@@ -287,21 +304,21 @@
 	}
 	
 	function handleDelete(row) {
-		get(`/roles/delete/${row.id}`, () => {
+		get(`/sso/roles/delete/${row.id}`, () => {
 			ElMessage.success('删除成功!')
 			initializePage()
 		})
 	}
 	
 	function handleDeleteList() {
-		post(`/roles/delete`, selectedRowList.value.map(row => row.id), () => {
+		post(`/sso/roles/delete`, selectedRowList.value.map(row => row.id), () => {
 			ElMessage.success('删除成功!')
 			initializePage()
 		})
 	}
 	
 	function exportData() {
-		window.open(`http://localhost:8000/mugen/api/roles/get/excel`)
+		window.open(`http://mieriki.net/mugen/api/sso/roles/get/excel`)
 	}
 	
 	function uploadSuccess(data) {
@@ -314,11 +331,11 @@
 	}
 	
 	const rules = {
-	    name: [
+	    roleCode: [
 			{ required: true, message: '请输入角色', trigger: 'blur' },
 			{ max: 50, message: '角色长度不能超过50个字符', trigger: 'blur' }
 	    ],
-	    nameZh: [
+	    roleName: [
 	    	{ required: true, message: '请输入角色名称', trigger: 'blur' },
 	    	{ max: 50, message: '角色名称长度不能超过50个字符', trigger: 'blur' }
 	    ]

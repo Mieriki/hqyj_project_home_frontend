@@ -7,6 +7,8 @@ import { createPinia } from 'pinia'
 import axios from "axios";
 import ElementPlus from 'element-plus';
 
+import IconButton from "./components/IconButton.vue";
+
 import { getMenuRouter } from '@/net'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
@@ -19,6 +21,8 @@ const pinia = createPinia()
 
 app.use(pinia)
 app.use(router)
+
+app.component('IconButton', IconButton)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)

@@ -42,6 +42,8 @@ declare module 'vue' {
     ElTransfer: typeof import('element-plus/es')['ElTransfer']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
+    IconButtom: typeof import('./components/IconButtom.vue')['default']
+    IconButton: typeof import('./components/IconButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

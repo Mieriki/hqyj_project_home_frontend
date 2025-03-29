@@ -356,7 +356,7 @@
 		selectedRowList.value = selection;
 	};
 	
-    function handleRole(row) {
+  function handleRole(row) {
 		get(`/roles/get/assignment/${row.id}`, (data) => {
 			organizeList.value = data.organizeList.map(role => role.id)
 			roleList.value = data.roleList

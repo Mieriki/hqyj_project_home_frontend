@@ -99,8 +99,8 @@
 <script setup lang="ts">
 	import { ref, onMounted, watch } from 'vue'
 	import router from '../router';
-	import { HomeFilled, Tools, Files, Van, Wallet, Histogram, Box } from '@element-plus/icons-vue'
-	import { useMeanStore } from '../store';
+  import { Search, HomeFilled, Tools, Files, Van, Wallet, Histogram, Box, MoreFilled, Upload, CirclePlus } from '@element-plus/icons-vue';
+  import { useMeanStore } from '../store';
 	import { getUserInfo, logout, get } from '../net';
 
 	let logoTextShow: Ref<boolean> = ref(true);
