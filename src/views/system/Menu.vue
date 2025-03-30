@@ -44,9 +44,9 @@
         <component :is="scope.row.iconCls ? scope.row.iconCls : MoreFilled " class="iconColor"></component>
       </template>
     </el-table-column>
-    <el-table-column prop="path" label="地址" width="250">
+    <el-table-column prop="path" label="路由" width="250">
     </el-table-column>
-    <el-table-column prop="component" label="路由">
+    <el-table-column prop="component" label="地址">
     </el-table-column>
     <el-table-column label="操作" width="250">
       <template #default="scope">
@@ -118,11 +118,11 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="地址" prop="path" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="menu.path" placeholder="请输入地址"/>
+      <el-form-item label="路由" prop="path" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="menu.path" placeholder="请输入路由"/>
       </el-form-item>
-      <el-form-item label="路由" prop="component" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="menu.component" placeholder="请输入路由"/>
+      <el-form-item label="地址" prop="component" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="menu.component" placeholder="请输入地址"/>
       </el-form-item>
       <el-row style="display: flex; justify-content: center; align-items: center; ">
         <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="addSubmitForm">新增</el-button>
@@ -151,11 +151,11 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="地址" prop="path" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="menu.path" placeholder="请输入地址"/>
+      <el-form-item label="路由" prop="path" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="menu.path" placeholder="请输入路由"/>
       </el-form-item>
-      <el-form-item label="路由" prop="component" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="menu.component" placeholder="请输入路由"/>
+      <el-form-item label="地址" prop="component" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="menu.component" placeholder="请输入地址"/>
       </el-form-item>
       <el-row style="display: flex; justify-content: center; align-items: center; ">
         <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="editSubmitForm">修改</el-button>

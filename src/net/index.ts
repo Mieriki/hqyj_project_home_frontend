@@ -69,7 +69,7 @@ function analysisCode(code: number) {
 	return false
 }
 
-function  requestHandler(url: string, data: any, success: (arg0: any) => void, failure: { (message: MessageParamsWithType, status: any, url: any): void; (arg0: any, arg1: any, arg2: any): void; }) {
+function  requestHandler(url: string, data: any, success: (arg0: any) => void, failure: { (message: MessageParamsWithType, status: any, url: any): void; (arg0: any, arg1: any, arg2: any): void; }, error : (arg0: any) => void) {
     console.log('data',　data)
     if (analysisCode(data.code)) {
         success(data.data)
@@ -93,13 +93,13 @@ function  requestHandler(url: string, data: any, success: (arg0: any) => void, f
 
 function internalPost(url: string, data: any, headers: {}, success: (arg0: any) => void, failure: { (message: MessageParamsWithType, status: any, url: any): void; (arg0: any, arg1: any, arg2: any): void; }, error = defaultError){
     axios.post(url, data, { headers: headers }).then(({data}) => {
-        requestHandler(url, data, success, failure)
+        requestHandler(url, data, success, failure, error)
     }).catch(err => error(err))
 }
 
 function internalGet(url: string, headers: {}, success: (arg0: any) => void, failure: { (message: MessageParamsWithType, status: any, url: any): void; (arg0: any, arg1: any, arg2: any): void; }, error = defaultError){
     axios.get(url, { headers: headers }).then(({data}) => {
-        requestHandler(url, data, success, failure)
+        requestHandler(url, data, success, failure, error)
     }).catch(err => error(err))
 }
 
