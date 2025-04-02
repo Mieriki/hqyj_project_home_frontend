@@ -42,11 +42,9 @@
 	
 	<el-table :data="roleList" border :header-cell-class-name="headerBg" @selection-change="handleSelectionChange" max-height=525>
 		<el-table-column type="selection" width="55"/>
-		<el-table-column prop="id" label="角色编号" width="200">
-		</el-table-column>
-		<el-table-column prop="roleCode" label="角色" width="200">
-		</el-table-column>
-		<el-table-column prop="roleName" label="角色名称" width="270">
+    <el-table-column prop="roleName" label="角色名称" width="280">
+    </el-table-column>
+		<el-table-column prop="roleCode" label="角色" width="270">
 		</el-table-column>
     <el-table-column prop="remark" label="备注" width="310">
     </el-table-column>
@@ -203,7 +201,7 @@
 	function initializePage() {
 		post(`/sso/roles/get`,searchValue , (data: any) => {
 			roleList.value = data.roleList
-			count.value = data.count
+			count.value = Number(data.count)
 		})
 		handleClose()
 	};

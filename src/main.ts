@@ -14,7 +14,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
-axios.defaults.baseURL = 'http://mieriki.net/mugen/api/'
+axios.defaults.baseURL = 'http://127.0.0.1:80/mugen/api/'
 
 const app = createApp(App)
 const pinia = createPinia()

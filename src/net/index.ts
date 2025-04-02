@@ -70,7 +70,6 @@ function analysisCode(code: number) {
 }
 
 function  requestHandler(url: string, data: any, success: (arg0: any) => void, failure: { (message: MessageParamsWithType, status: any, url: any): void; (arg0: any, arg1: any, arg2: any): void; }, error : (arg0: any) => void) {
-    console.log('data',　data)
     if (analysisCode(data.code)) {
         success(data.data)
         return

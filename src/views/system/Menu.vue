@@ -48,7 +48,7 @@
     </el-table-column>
     <el-table-column prop="component" label="地址">
     </el-table-column>
-    <el-table-column label="操作" width="250">
+    <el-table-column label="操作" fixed="right" width="250">
       <template #default="scope">
         <el-button size="small" type="warning" @click="handleEdit(scope.row)">编辑</el-button>
         <el-popconfirm
@@ -74,8 +74,6 @@
           <IconButton :show-shine="false" @click="sortUp(scope.row)" style="margin-right: 10px;"><ArrowUpBold /></IconButton>
           <IconButton :show-shine="false" @click="sortDown(scope.row)"><ArrowDownBold /></IconButton>
         </el-row>
-
-
       </template>
     </el-table-column>
   </el-table>

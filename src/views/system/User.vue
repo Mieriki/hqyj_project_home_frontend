@@ -318,7 +318,7 @@ function initializePage() {
       item.genderStr = item.gender === 1 ? '男' : (item.gender === 2 ? '女' : '保密')
       return item
     })
-    count.value = data.count
+    count.value = Number(data.count)
   })
   handleClose()
 };
