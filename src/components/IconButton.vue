@@ -85,6 +85,8 @@ const hoverColor = computed(() => {
   outline: none;
   line-height: 0;
   box-sizing: border-box;
+
+  overflow: hidden;
 }
 
 .button-core {
@@ -94,15 +96,17 @@ const hoverColor = computed(() => {
   transition: transform 0.2s ease;
 }
 
+/* 调整伪元素尺寸为100% */
 .button-core::before {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
+  width: 100%;  /* 修改此处 */
+  height: 100%; /* 修改此处 */
   z-index: 1;
+  pointer-events: none;
 }
 
 .button-background {

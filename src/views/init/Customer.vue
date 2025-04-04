@@ -41,7 +41,7 @@
 		</el-row>
 	</div>
 	
-	<el-table :data="customerList" border :header-cell-class-name="headerBg" @selection-change="handleSelectionChange" max-height=525>
+	<el-table :data="customerList" border @selection-change="handleSelectionChange" max-height=525>
 		<el-table-column type="selection" width="55"/>
 		<el-table-column prop="id" label="客户编号" width="100">
 		</el-table-column>

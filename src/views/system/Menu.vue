@@ -32,7 +32,6 @@
       :data="menuList"
       row-key="id"
       border
-      :header-cell-class-name="headerBg"
       :tree-props="{
 			children: 'children'
 		}"
@@ -68,7 +67,7 @@
         <el-button v-if="scope.row.parentId === '-1'" size="small" type="primary" @click="nextAddChild(scope.row)">新增<el-icon><CirclePlus /></el-icon></el-button>
       </template>
     </el-table-column>
-    <el-table-column label="排序" width="120">
+    <el-table-column label="排序" width="120" fixed="right">
       <template #default="scope">
         <el-row>
           <IconButton :show-shine="false" @click="sortUp(scope.row)" style="margin-right: 10px;"><ArrowUpBold /></IconButton>

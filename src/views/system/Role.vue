@@ -40,7 +40,7 @@
 		</el-row>
 	</div>
 	
-	<el-table :data="roleList" border :header-cell-class-name="headerBg" @selection-change="handleSelectionChange" max-height=525>
+	<el-table :data="roleList" border @selection-change="handleSelectionChange" max-height=525>
 		<el-table-column type="selection" width="55"/>
     <el-table-column prop="roleName" label="角色名称" width="280">
     </el-table-column>

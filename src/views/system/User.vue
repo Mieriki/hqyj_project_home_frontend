@@ -1,4 +1,35 @@
 <template>
+  <el-row style="height: 100%;">
+    <el-col :span="4">
+      <el-card
+          style="height: 80vh; border-radius: 8px; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.08);"
+          shadow="hover">
+        <template #header>
+          <div class="card-header">
+            <span style="font-size: 16px; font-weight: 600; color: #303133;">参数分类</span>
+          </div>
+        </template>
+        <el-scrollbar wrap-class="scrollbar-wrapper" view-class="scrollbar-view" style="width: 100%; top: -15px;">
+          <div class="category-list">
+            <div
+                class="category-item"
+                :class="{ 'active-item': activeIndex === -1 }"
+                @click="handleCategoryClick(-1)">
+              全部
+            </div>
+            <div
+                v-for="(item, index) in deptList"
+                :key="item.id"
+                class="category-item"
+                :class="{ 'active-item': activeIndex === index }"
+                @click="handleCategoryClick(index)">
+              {{ item.deptName }}
+            </div>
+          </div>
+        </el-scrollbar>
+      </el-card>
+    </el-col>
+    <el-col :span="20" style="padding-left: 10px;">
   <div style="margin-bottom: 10px;">
     <el-row>
       <el-input v-model="searchValue.name" style="width: 240px;" size="small" placeholder="请输入姓名或用户名"
@@ -60,7 +91,7 @@
     </el-row>
   </div>
 
-  <el-table :data="adminList" border :header-cell-class-name="headerBg" @selection-change="handleSelectionChange"
+  <el-table :data="adminList" border @selection-change="handleSelectionChange"
             max-height=525>
     <el-table-column type="selection" width="55"/>
     <el-table-column label="头像" fixed width="55">
@@ -74,13 +105,15 @@
     </el-table-column>
     <el-table-column prop="genderStr" label="性别" width="60">
     </el-table-column>
+    <el-table-column prop="deptName" label="部门" width="100">
+    </el-table-column>
     <el-table-column prop="phone" label="电话" width="140">
     </el-table-column>
     <el-table-column prop="email" label="邮箱" width="180">
     </el-table-column>
-    <el-table-column prop="introduction" label="备注" width="270">
+    <el-table-column prop="introduction" label="备注" width="180">
     </el-table-column>
-    <el-table-column label="操作" fixed="right">
+    <el-table-column label="操作" fixed="right" width="220">
       <template #default="scope">
         <el-button size="small" type="primary" @click="handleRole(scope.row)">
           <el-icon>
@@ -124,17 +157,19 @@
     </el-table-column>
   </el-table>
 
-  <div style="padding: 10px 0; position: absolute; bottom: 2%;">
-    <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        v-model:current-page="searchValue.currentPage"
-        :page-sizes="[5, 10, 15, 20]"
-        :page-size="searchValue.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="count">
-    </el-pagination>
-  </div>
+      <div style="padding: 10px 0; position: absolute; bottom: -10px;">
+        <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            v-model:current-page="searchValue.currentPage"
+            :page-sizes="[5, 10, 15, 20]"
+            :page-size="searchValue.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="count">
+        </el-pagination>
+      </div>
+    </el-col>
+  </el-row>
 
   <el-dialog
       v-if="addDialogVisible"
@@ -164,6 +199,11 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-form-item label="部门" prop="deptId" style="width: 400px; margin-top: 20px;">
+        <el-select v-model="admin.deptId" placeholder="请选择部门">
+          <el-option v-for="item in deptList" :key="item.id" :label="item.deptName" :value="item.id"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="电话" prop="phone" style="width: 400px; margin-top: 20px;">
         <el-input v-model="admin.phone"></el-input>
       </el-form-item>
@@ -203,6 +243,11 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-form-item label="部门" prop="deptId" style="width: 400px; margin-top: 20px;">
+        <el-select v-model="admin.deptId" placeholder="请选择部门">
+          <el-option v-for="item in deptList" :key="item.id" :label="item.deptName" :value="item.id"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="电话" prop="phone" style="width: 400px; margin-top: 20px;">
         <el-input v-model="admin.phone"></el-input>
       </el-form-item>
@@ -212,6 +257,21 @@
       <el-form-item label="备注" prop="introduction" style="width: 505px; margin-top: 20px;">
         <el-input v-model="admin.introduction"></el-input>
       </el-form-item>
+      <el-row v-if="!admin.enabled" style="display: flex; justify-content: center; align-items: center; ">
+        <el-popconfirm
+            confirm-button-text="确认"
+            cancel-button-text="点错了"
+            :icon="InfoFilled"
+            confirm-button-type="danger"
+            icon-color="#ef0004"
+            title="确认要进行此操作?"
+            :width="200"
+            @confirm="handleResetPassword(admin.id)">
+          <template #reference>
+            <el-button type="danger" style="width: 457px; margin-top: 20px;">重置密码</el-button>
+          </template>
+        </el-popconfirm>
+      </el-row>
       <el-row style="display: flex; justify-content: center; align-items: center; ">
         <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="editSubmitForm">修改</el-button>
         <el-button type="info" style="width: 200px; margin-top: 20px; margin-left: 60px;" @click="handleClose">取消
@@ -254,7 +314,7 @@
 <script setup>
 import {ref, onMounted, reactive} from 'vue';
 import {Search} from '@element-plus/icons-vue';
-import {get, post, accessHeader} from '@/net';
+import {get, post, accessHeader, logout} from '@/net';
 import router from '@/router';
 import {useMeanStore} from '@/store';
 
@@ -267,10 +327,12 @@ const roleDialogVisible = ref(false)
 
 let selectedRowList = ref([])
 let organizeList = ref([])
+let deptList = ref([])
 let roleList = ref([])
 const count = ref(0)
 
 let searchValue = reactive({
+  deptId: '',
   name: '',
   address: '',
   currentPage: 1,
@@ -319,6 +381,9 @@ function initializePage() {
       return item
     })
     count.value = Number(data.count)
+  })
+  get(`/sso/depts/get` , (data) => {
+    deptList.value = data
   })
   handleClose()
 };
@@ -369,6 +434,12 @@ const handleSearch = () => {
   searchValue.currentPage = 1
   initializePage()
 };
+
+function handleCategoryClick(index) {
+  searchValue.currentPage = 1
+  searchValue.deptId = index === -1 ? null : deptList.value[index].id
+  initializePage()
+}
 
 const handleSizeChange = (val) => {
   searchValue.pageSize = val;
@@ -458,6 +529,17 @@ function editSubmitForm() {
   });
 }
 
+function handleResetPassword(id) {
+  get(`/sso/users/put//default/password/${id}`, () => {
+    ElMessage.success('密码重置成功!')
+    if (admin.id === meanStore.userInfo.id) {
+      userLogout();
+    } else {
+      initializePage();
+    }
+  })
+}
+
 function handleDelete(row) {
   get(`/sso/users/delete/${row.id}`, () => {
     ElMessage.success('删除成功!')
@@ -485,6 +567,13 @@ function uploadSuccess(data) {
   )
 }
 
+function userLogout() {
+  logout(() => {
+    meanStore.changeRouteStatus(false)
+    router.push("/welcome/login")
+  })
+}
+
 const rules = {
   username: [
     {required: true, message: '请输入姓名', trigger: 'blur'},
@@ -493,6 +582,11 @@ const rules = {
   account: [
     {required: true, message: '请输入用户名', trigger: 'blur'},
     {max: 20, message: '用户名长度不能超过20个字符', trigger: 'blur'}
+  ],
+  password: [
+    {required: true, message: '请输入密码', trigger: 'blur'},
+    {min: 6, max: 50, message: '密码长度必须在6到50个字符之间', trigger: 'blur'},
+    { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z_@.]{6,50}$/, message: '密码必须包含字母、数字或特殊字符', trigger: 'blur' },
   ],
   phone: [
     {required: true, message: '请输入电话号码', trigger: 'blur'},
@@ -519,5 +613,93 @@ const rules = {
 
 .edit-dev >>> .el-transfer-panel__body {
   height: 400px;
+}
+
+/* 卡片整体样式 */
+.card-header {
+  //padding: 16px 20px;
+  padding: 0;
+}
+
+/* 滚动区域样式 */
+.scrollbar-wrapper {
+  padding: 10px 0;
+}
+
+/* 分类列表样式 */
+.category-list {
+  padding: 0;
+  margin: 0;
+}
+
+.category-item {
+  font-size: 15px;
+  padding: 12px 16px;
+  margin: 4px 0;
+  border-radius: 6px;
+  color: #606266;
+  cursor: pointer;
+  transition: all 0.3s;
+  line-height: 1.5;
+}
+
+.category-item:hover {
+  background-color: #f5f7fa;
+  color: #409eff;
+}
+
+.active-item {
+  background-color: #ecf5ff !important;
+  color: #409eff !important;
+  font-weight: 500;
+}
+
+.dict-form-item {
+  width: 505px;
+  margin-top: 20px;
+}
+
+.value-input {
+  --el-input-textarea-height: 120px;
+}
+
+.preview-image {
+  width: 80px;
+  height: 80px;
+  margin-right: 16px;
+  border-radius: var(--el-border-radius-base);
+  box-shadow: var(--el-box-shadow-light);
+  transition: transform 0.3s ease;
+}
+
+.preview-image:hover {
+  transform: scale(1.05);
+}
+
+.image-upload-wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.image-uploader :deep(.el-upload) {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed var(--el-border-color);
+  border-radius: var(--el-border-radius-base);
+  transition: border-color 0.3s;
+}
+
+.image-uploader :deep(.el-upload:hover) {
+  border-color: var(--el-color-primary);
+}
+
+.upload-icon {
+  font-size: 24px;
+  color: var(--el-text-color-secondary);
+}
+
+.bool-switch {
+  margin: 10px 0;
 }
 </style>

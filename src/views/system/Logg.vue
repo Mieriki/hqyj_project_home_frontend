@@ -27,7 +27,7 @@
     </el-row>
   </div>
 
-  <el-table :data="logList" border :header-cell-class-name="headerBg" max-height=525>
+  <el-table :data="logList" border :row-class-name="tableRowClassName" max-height=525>
     <el-table-column prop="userName" label="用户名" width="100">
     </el-table-column>
     <el-table-column prop="businessType" label="操作模块" width="125">
@@ -238,7 +238,34 @@ function formatISODate(isoDateString: string | number | Date) {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
+
+const tableRowClassName = ({row, rowIndex}: {
+  row: Log,
+  rowIndex: number
+}) => {
+  if (row.operTime > 1000) {
+    return 'warning-row'
+  } else if (row.operTime > 3600) {
+    return 'error-row'
+  }
+  return ''
+}
 </script>
 
 <style scoped>
+</style>
+
+<style>
+.el-table .warning-row {
+  --el-table-tr-bg-color: var(--el-color-warning-light-9);
+}
+.el-table .success-row {
+  --el-table-tr-bg-color: var(--el-color-success-light-9);
+}
+.el-table .error-row {
+  --el-table-tr-bg-color: var(--el-color-error-light-9);
+}
+.el-table .handler {
+  --el-table-tr-bg-color: var(--el-color-black);
+}
 </style>

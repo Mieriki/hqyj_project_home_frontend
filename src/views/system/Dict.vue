@@ -93,7 +93,7 @@
         </el-row>
       </div>
 
-      <el-table :data="dictDataList" border :header-cell-class-name="headerBg" @selection-change="handleSelectionChange"
+      <el-table :data="dictDataList" border @selection-change="handleSelectionChange"
                 max-height=525 width="100%">
         <el-table-column type="selection" width="55">
         </el-table-column>
@@ -118,7 +118,7 @@
                 <el-switch v-model="scope.row.switch" @click="scope.row.switch = !scope.row.switch"></el-switch>
               </template>
             </el-popconfirm>
-            <el-image v-else-if="scope.row.status === 'image'" :src="scope.row.dictValue" style="width: 20%; height: 20%;"></el-image>
+            <el-image v-else-if="scope.row.status === 'image'" :src="scope.row.dictValue" style="width: 35px; height: 35px;;"></el-image>
             <el-text v-if="scope.row.status !== 'bool' && scope.row.status !== 'image'">{{ scope.row.dictValue }}</el-text>
           </template>
         </el-table-column>
@@ -204,18 +204,30 @@
       <el-form-item v-if="dictData.status !== 'static'" label="参数值" prop="dictValue" style="width: 505px; margin-top: 20px;">
         <el-input v-if="dictData.status !== 'bool'" v-model="dictData.dictValue" type="textarea" placeholder="请输入参数值"/>
         <el-switch v-if="dictData.status === 'bool'" v-model="switchValue" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否"></el-switch>
-        <el-upload
-            v-if="dictData.status === 'image'"
-            list-type="picture-card"
-            :file-list="fileList"
-            :headers="headers"
-            :action="postUrl"
-            :multiple="false"
-            :show-file-list="false"
-            :on-success="uploadSuccess"
-            style="margin-top: 10px;">
-
-        </el-upload>
+        <!-- 图片上传区域 -->
+        <div v-if="dictData.status === 'image'" class="image-upload-wrapper">
+          <el-image
+              v-if="dictData.dictValue"
+              :src="dictData.dictValue"
+              class="preview-image"
+              fit="cover"
+          />
+          <el-upload
+              ref="imageRef"
+              list-type="picture-card"
+              :accept="'image/*'"
+              :headers="headers"
+              :action="imagePostUrl"
+              :multiple="false"
+              :show-file-list="false"
+              :on-exceed="handleExceed"
+              :limit="1"
+              :on-success="imageUploadSuccess"
+              class="image-uploader"
+          >
+            <el-icon class="upload-icon"><Plus /></el-icon>
+          </el-upload>
+        </div>
       </el-form-item>
       <el-form-item label="备注" prop="remark" style="width: 505px; margin-top: 20px;">
         <el-input v-model="dictData.remark" type="textarea" placeholder="请输入备注"/>
@@ -263,6 +275,30 @@
       <el-form-item v-if="dictData.status !== 'static'" label="参数值" prop="dictValue" style="width: 505px; margin-top: 20px;">
         <el-input v-if="dictData.status !== 'bool'" v-model="dictData.dictValue" type="textarea" placeholder="请输入参数值"/>
         <el-switch v-if="dictData.status === 'bool'" v-model="switchValue" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否"></el-switch>
+        <!-- 图片上传区域 -->
+        <div v-if="dictData.status === 'image'" class="image-upload-wrapper">
+          <el-image
+              v-if="dictData.dictValue"
+              :src="dictData.dictValue"
+              class="preview-image"
+              fit="cover"
+          />
+          <el-upload
+              ref="imageRef"
+              :accept="'image/*'"
+              list-type="picture-card"
+              :headers="headers"
+              :action="imagePostUrl"
+              :multiple="false"
+              :show-file-list="false"
+              :on-exceed="handleExceed"
+              :limit="1"
+              :on-success="imageUploadSuccess"
+              class="image-uploader"
+          >
+            <el-icon class="upload-icon"><Plus /></el-icon>
+          </el-upload>
+        </div>
       </el-form-item>
       <el-form-item label="备注" prop="remark" style="width: 505px; margin-top: 20px;">
         <el-input v-model="dictData.remark" type="textarea" placeholder="请输入备注"/>
@@ -294,12 +330,17 @@ const inputTypeList = ref([])
 let switchValue = ref(true)
 
 let fileName = ref("multipartFiles")
-let imgFile = ref("multipartFiles")
+let imageName = ref("multipartFiles")
 
 
 let headers = ref(accessHeader())
 let fileList = ref([])
+let imageList = ref([])
+
+let imageRef = ref(null)
+
 let postUrl = ref("http://mugen.net/mugen/api/dict/dict-datas/post/excel")
+let imagePostUrl = ref("http://mugen.net/mugen/api/dict/dict-datas/post/image")
 
 let searchValue = reactive({
   dictType: '',
@@ -501,10 +542,21 @@ function exportData() {
   window.open(`http://mugen.net/mugen/api/dict/dict-datas/get/excel`)
 }
 
-function uploadSuccess(data) {
+function uploadSuccess(data: any) {
   if (data.code === 200) {
     ElMessage.success("上传成功!")
     initializePage();
+  } else (
+      ElMessage.warning(data.message)
+  )
+}
+
+function imageUploadSuccess(data) {
+  if (data.code === 200) {
+    dictData.dictValue = data.data
+    imageList.value = []
+    imageRef.value.clearFiles()
+    ElMessage.success("上传成功!")
   } else (
       ElMessage.warning(data.message)
   )
@@ -554,6 +606,7 @@ const rules = {
 }
 
 .category-item {
+  font-size: 15px;
   padding: 12px 16px;
   margin: 4px 0;
   border-radius: 6px;
@@ -572,5 +625,54 @@ const rules = {
   background-color: #ecf5ff !important;
   color: #409eff !important;
   font-weight: 500;
+}
+
+.dict-form-item {
+  width: 505px;
+  margin-top: 20px;
+}
+
+.value-input {
+  --el-input-textarea-height: 120px;
+}
+
+.preview-image {
+  width: 80px;
+  height: 80px;
+  margin-right: 16px;
+  border-radius: var(--el-border-radius-base);
+  box-shadow: var(--el-box-shadow-light);
+  transition: transform 0.3s ease;
+}
+
+.preview-image:hover {
+  transform: scale(1.05);
+}
+
+.image-upload-wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.image-uploader :deep(.el-upload) {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed var(--el-border-color);
+  border-radius: var(--el-border-radius-base);
+  transition: border-color 0.3s;
+}
+
+.image-uploader :deep(.el-upload:hover) {
+  border-color: var(--el-color-primary);
+}
+
+.upload-icon {
+  font-size: 24px;
+  color: var(--el-text-color-secondary);
+}
+
+.bool-switch {
+  margin: 10px 0;
 }
 </style>

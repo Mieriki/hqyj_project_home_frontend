@@ -1,12 +1,12 @@
 <template>
   <div style="margin-bottom: 10px;">
     <el-row>
-      <el-input v-model="searchValue.typeName" style="width: 240px;" size="small" placeholder="请输入类型名称" type="text">
+      <el-input v-model="searchValue.deptName" style="width: 240px;" size="small" placeholder="请输入科室名称" type="text">
         <template #prepend>
           <el-button @click="handleSearch" :icon="Search" />
         </template>
       </el-input>
-      <el-input v-model="searchValue.dictType" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入类型编码" type="text"></el-input>
+<!--      <el-input v-model="searchValue.address" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入地址" type="text"></el-input>-->
       <el-button  @click="handleSearch" style="margin-left: 5px; width: 75px; height: 32px;" size="small" type="primary">搜索</el-button>
 
       <el-button type="primary" style="width: 80px; height: 32px;" size="small" @click="nextAdd">新增<el-icon><CirclePlus /></el-icon></el-button>
@@ -41,14 +41,22 @@
     </el-row>
   </div>
 
-  <el-table :data="dictTypeList" border @selection-change="handleSelectionChange" max-height=525>
-    <el-table-column type="selection" width="55">
+  <el-table :data="deptList" border @selection-change="handleSelectionChange" max-height=525>
+    <el-table-column type="selection" width="55"/>
+    <el-table-column prop="deptName" label="科室名称" width="200">
     </el-table-column>
-    <el-table-column label="类型名称" prop="typeName" width="270">
+    <el-table-column prop="deptNumber" label="科室编号" width="180">
     </el-table-column>
-    <el-table-column label="字典类型" prop="dictType" width="275">
+    <el-table-column prop="regNumber" label="当前挂号量" width="150">
     </el-table-column>
-    <el-table-column label="备注" prop="remark" width="500">
+    <el-table-column prop="deptLeader" label="负责人" width="150">
+    </el-table-column>
+    <el-table-column prop="leaderPhone" label="负责人电话" width="200">
+    </el-table-column>
+    <el-table-column prop="status" label="状态" width="100">
+      <template #default="scope">
+        {{ statusList.find((item) => item.dictCode === scope.row.status).dictName }}
+      </template>
     </el-table-column>
     <el-table-column label="操作" fixed="right">
       <template #default="scope">
@@ -67,6 +75,14 @@
             <el-button type="danger" size="small">删除</el-button>
           </template>
         </el-popconfirm>
+      </template>
+    </el-table-column>
+    <el-table-column label="排序" width="120" fixed="right">
+      <template #default="scope">
+        <el-row>
+          <IconButton :show-shine="false" @click="sortUp(scope.row)" style="margin-right: 10px;"><ArrowUpBold /></IconButton>
+          <IconButton :show-shine="false" @click="sortDown(scope.row)"><ArrowDownBold /></IconButton>
+        </el-row>
       </template>
     </el-table-column>
   </el-table>
@@ -88,15 +104,23 @@
       v-model="addDialogVisible"
       width=620
       :before-close="handleClose">
-    <el-form :model="dictType" :rules="rules" ref="formRef" label-width="100px">
-      <el-form-item label="类型名称" prop="typeName" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.typeName"></el-input>
+    <el-form :model="dept" :rules="rules" ref="formRef" label-width="100px">
+      <el-form-item label="科室名称" prop="deptName" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="dept.deptName"></el-input>
       </el-form-item>
-      <el-form-item label="字典编码" prop="dictType" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.dictType"></el-input>
+      <el-form-item label="科室编号" prop="deptNumber" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="dept.deptNumber"></el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="remark" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.remark"></el-input>
+      <el-form-item label="部门类型" prop="status" style="width: 505px; margin-top: 20px;">
+        <el-select v-model="dept.status" placeholder="请选择">
+          <el-option v-for="item in statusList" :key="item.dictCode" :label="item.dictName" :value="item.dictCode"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="科室负责人" prop="deptLeader" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="dept.deptLeader"></el-input>
+      </el-form-item>
+      <el-form-item label="负责人电话" prop="leaderPhone" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="dept.leaderPhone"></el-input>
       </el-form-item>
       <el-row style="display: flex; justify-content: center; align-items: center; ">
         <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="addSubmitForm">新增</el-button>
@@ -110,15 +134,23 @@
       v-model="editDialogVisible"
       width=620
       :before-close="handleClose">
-    <el-form :model="dictType" :rules="rules" ref="formRef" label-width="100px">
-      <el-form-item label="类型名称" prop="typeName" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.typeName"></el-input>
+    <el-form :model="dept" :rules="rules" ref="formRef" label-width="100px">
+      <el-form-item label="科室名称" prop="deptName" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="dept.deptName"></el-input>
       </el-form-item>
-      <el-form-item label="字典编码" prop="dictType" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.dictType" disabled></el-input>
+      <el-form-item label="科室编号" prop="deptNumber" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="dept.deptNumber" disabled></el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="remark" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.remark"></el-input>
+      <el-form-item label="部门类型" prop="status" style="width: 505px; margin-top: 20px;">
+        <el-select v-model="dept.status" placeholder="请选择">
+          <el-option v-for="item in statusList" :key="item.dictCode" :label="item.dictName" :value="item.dictCode"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="科室负责人" prop="deptLeader" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="dept.deptLeader"></el-input>
+      </el-form-item>
+      <el-form-item label="负责人电话" prop="leaderPhone" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="dept.leaderPhone"></el-input>
       </el-form-item>
       <el-row style="display: flex; justify-content: center; align-items: center; ">
         <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="editSubmitForm">修改</el-button>
@@ -133,8 +165,10 @@ import { ref, onMounted, reactive } from 'vue';
 import { Search } from '@element-plus/icons-vue';
 import { get, post, accessHeader } from '@/net';
 import router from '@/router';
+import IconButton from "@/components/IconButton.vue";
 
-let dictTypeList = ref([]);
+let deptList = ref([]);
+let statusList = ref([]);
 const addDialogVisible = ref(false)
 const editDialogVisible = ref(false)
 
@@ -142,32 +176,38 @@ let selectedRowList = ref([])
 const count = ref(0)
 
 let searchValue = reactive({
-
+  deptName: '',
   currentPage: 1,
   pageSize: 10
 })
 
-interface DictType {
+
+interface Dept {
   id: number;
-  typeName: string;
-  dictType: string;
-  remark: string;
+  deptName: string;
+  regNumber: number;
+  deptNumber: string;
+  orderNum: number;
+  deptLeader: string;
+  leaderPhone: string;
   status: string;
 }
 
-
-let dictType: DictType = reactive({
+let dept : Dept = reactive({
   id: 0,
-  typeName: '',
-  dictType: '',
-  remark: '',
-  status: ''
+  deptName: '',
+  regNumber: 0,
+  deptNumber: '',
+  orderNum: 0,
+  deptLeader: '',
+  leaderPhone: '',
+  status: '',
 })
 
 let fileName = ref("multipartFiles")
 let headers =ref(accessHeader())
 let fileList =ref([])
-let postUrl = ref("http://mugen.net/mugen/api/dict/dict-types/post/excel")
+let postUrl = ref("http://mugen.net/mugen/api/sso/depts/post/excel")
 
 const formRef = ref()
 // 页面初始化加载数据
@@ -177,9 +217,12 @@ onMounted(() => {
 
 // 初始化页面数据
 function initializePage() {
-  post(`/dict/dict-types/get`,searchValue , (data: any) => {
-    dictTypeList.value = data.dictTypeList
-    count.value = Number(data.count)
+  post(`/sso/depts/get`,searchValue , (data: any) => {
+    deptList.value = data.deptList
+    count.value = data.count
+  })
+  get(`/dict/dict-datas/get/list/dept-status`, (data: any) => {
+    statusList.value = data
   })
   handleClose()
 };
@@ -187,11 +230,14 @@ function initializePage() {
 function handleClose() {
   addDialogVisible.value = false
   editDialogVisible.value = false
-  dictType.id = 0
-  dictType.typeName = ''
-  dictType.dictType = ''
-  dictType.remark = ''
-  dictType.status = ''
+  dept.id = 0
+  dept.deptName = ''
+  dept.regNumber = 0
+  dept.deptNumber = ''
+  dept.orderNum = 0
+  dept.deptLeader = ''
+  dept.leaderPhone = ''
+  dept.status = ''
 }
 
 const handleSearch = () => {
@@ -217,18 +263,21 @@ function nextAdd() {
 }
 
 function handleEdit(row) {
-  dictType.id = row.id
-  dictType.typeName = row.typeName
-  dictType.dictType = row.dictType
-  dictType.remark = row.remark
-  dictType.status = row.status
+  dept.id = row.id
+  dept.deptName = row.deptName
+  dept.regNumber = row.regNumber
+  dept.deptNumber = row.deptNumber
+  dept.orderNum = row.orderNum
+  dept.deptLeader = row.deptLeader
+  dept.leaderPhone = row.leaderPhone
+  dept.status = row.status
   editDialogVisible.value = true
 }
 
 function addSubmitForm() {
   formRef.value.validate((valid) => {
     if (valid) {
-      post(`/dict/dict-types/post`, dictType, () => {
+      post(`/sso/depts/post`, dept, () => {
         ElMessage.success('添加成功!')
         initializePage()
       })
@@ -243,7 +292,7 @@ function addSubmitForm() {
 function editSubmitForm() {
   formRef.value.validate((valid) => {
     if(valid) {
-      post('/dict/dict-types/put', dictType, () => {
+      post('/sso/depts/put', dept, () => {
         ElMessage.success('修改成功!')
         initializePage()
       })
@@ -254,21 +303,21 @@ function editSubmitForm() {
 }
 
 function handleDelete(row) {
-  get(`/dict/dict-types/delete/${row.id}`, () => {
+  get(`/sso/depts/delete/${row.id}`, () => {
     ElMessage.success('删除成功!')
     initializePage()
   })
 }
 
 function handleDeleteList() {
-  post(`/dict/dict-types/delete`, selectedRowList.value.map(row => row.id), () => {
+  post(`/sso/depts/delete`, selectedRowList.value.map(row => row.id), () => {
     ElMessage.success('删除成功!')
     initializePage()
   })
 }
 
 function exportData() {
-  window.open(`http://mugen.net/mugen/api/dict/dict-types/get/excel`)
+  window.open(`http://mugen.net/mugen/api/sso/depts/get/excel`)
 }
 
 function uploadSuccess(data) {
@@ -280,17 +329,40 @@ function uploadSuccess(data) {
   )
 }
 
+function sortUp(row) {
+  get(`/sso/depts/get/sort/up/${row.id}`, () => {
+    ElMessage.success('上移成功!')
+    initializePage()
+  })
+}
+
+function sortDown(row) {
+  get(`/sso/depts/get/sort/down/${row.id}`, () => {
+    ElMessage.success('下移成功!')
+    initializePage()
+  })
+}
+
 let rules = {
-  typeName: [
-    { required: true, message: '请输入类型名称', trigger: 'blur' },
+  deptName: [
+    { required: true, message: '科室名称不能为空', trigger: 'blur' },
     { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
   ],
-  dictType: [
-    { required: true, message: '请输入字典类型', trigger: 'blur' },
+  deptNumber: [
+    { required: true, message: '科室编号不能为空', trigger: 'blur' },
     { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
   ],
-  remark: [
-    { min: 2, max: 200, message: '长度在 2 到 200 个字符', trigger: 'blur' }
+  deptLeader: [
+    { required: true, message: '科室负责人不能为空', trigger: 'blur' },
+    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+  ],
+  leaderPhone: [
+    { required: true, message: '负责人电话不能为空', trigger: 'blur' },
+    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' },
+    { pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
+  ],
+  status: [
+    { required: true, message: '部门类型不能为空', trigger: 'blur' }
   ]
 };
 </script>

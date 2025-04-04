@@ -94,6 +94,28 @@
 			</el-container>
 		</el-container>
 	</div>
+
+  <el-dialog
+      v-if="editDialogVisible"
+      v-model="editDialogVisible"
+      width=620
+      :before-close="handleClose">
+    <el-form :model="passwordForm" :rules="rules" ref="formRef" label-width="100px">
+      <el-form-item label="旧密码" prop="oldPassword" style="width: 505px; margin-top: 20px;">
+        <el-input type="password" v-model="passwordForm.oldPassword" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="新密码" prop="newPassword" style="width: 505px; margin-top: 20px;">
+        <el-input type="password" v-model="passwordForm.newPassword" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="确认密码" prop="confirmPassword" style="width: 505px; margin-top: 20px;">
+        <el-input type="password" v-model="passwordForm.confirmPassword" autocomplete="off" />
+      </el-form-item>
+      <el-row style="display: flex; justify-content: center; align-items: center; ">
+        <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="editSubmitForm">修改</el-button>
+        <el-button type="info" style="width: 200px; margin-top: 20px; margin-left: 60px;" @click="handleClose">取消</el-button>
+      </el-row>
+    </el-form>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -101,11 +123,14 @@
 	import router from '../router';
   import { Search, HomeFilled, Tools, Files, Van, Wallet, Histogram, Box, MoreFilled, Upload, CirclePlus } from '@element-plus/icons-vue';
   import { useMeanStore } from '../store';
-	import { getUserInfo, logout, get } from '../net';
+	import { getUserInfo, logout, get, post } from '../net';
+  import { reactive } from 'vue'
 
 	let logoTextShow: Ref<boolean> = ref(true);
 	let isCollapse: Ref<boolean> = ref(false);
 	let sideWidth: Ref<number> = ref(200);
+
+  let editDialogVisible: Ref<boolean> = ref(false);
 	
 	const menuList: Ref<any> = ref();
 	const meanStore: any = useMeanStore();
@@ -113,6 +138,9 @@
 	const breadList = ref([]);
 	
 	const user = ref({})
+
+  const formRef = ref(null);
+
 	
 	function initializePage() {
 		get(`/sso/users/get/me`, (data) => {
@@ -171,6 +199,18 @@
 		}
 	}
 
+  interface PasswordForm {
+    oldPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }
+
+  let passwordForm: PasswordForm = reactive({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+
   watch(
       () => ({
         route: router.currentRoute.value,
@@ -189,6 +229,63 @@
         }
       }, { immediate: true, deep: true }
   );
+
+  const rules = {
+    // 英文、数字、常用符号
+    oldPassword: [
+      { required: true, message: '请输入旧密码', trigger: 'blur' },
+      { min: 6, max: 50, message: '密码长度在6到16个字符', trigger: 'blur' },
+    ],
+    newPassword: [
+      { required: true, message: '请输入新密码', trigger: 'blur' },
+      { min: 6, max: 50, message: '密码长度在6到50个字符', trigger: 'blur' },
+      { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z_@.]{6,50}$/, message: '密码必须包含字母、数字或特殊字符', trigger: 'blur' },
+    ],
+    confirmPassword: [
+      { required: true, message: '请确认新密码', trigger: 'blur' },
+      { min: 6, max: 50, message: '密码长度在6到50个字符', trigger: 'blur' },
+      { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z_@.]{6,50}$/, message: '密码必须包含字母、数字或特殊字符', trigger: 'blur' },
+      { validator: (rule, value, callback) => {
+        if (value !== passwordForm.newPassword) {
+          callback('两次输入的密码不一致!');
+        } else if (value === passwordForm.oldPassword) {
+          callback('新密码不能与旧密码相同!');
+        } else {
+          callback();
+        }
+      }, trigger: 'blur' },
+    ],
+  };
+
+  function handleResetPassword() {
+    editDialogVisible.value = true;
+    setTimeout(() => {
+      formRef.value.resetFields();
+    }, 0);
+  }
+
+  function handleClose() {
+    editDialogVisible.value = false;
+    passwordForm.oldPassword = '';
+    passwordForm.newPassword = '';
+    passwordForm.confirmPassword = '';
+  }
+
+  function editSubmitForm() {
+    formRef.value.validate((valid) => {
+      if (valid) {
+        const data = {
+          oldPassword: passwordForm.oldPassword,
+          newPassword: passwordForm.newPassword,
+        };
+        post('/sso/users/put/password', passwordForm, (data) => {
+          ElMessage.success('密码修改成功，请重新登录');
+          handleClose();
+          userLogout();
+        });
+      }
+    });
+  }
 </script>
 
 <style scoped>
