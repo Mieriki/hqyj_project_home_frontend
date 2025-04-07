@@ -539,7 +539,36 @@ function editBoolean(row) {
 }
 
 function exportData() {
-  window.open(`http://mugen.net/mugen/api/dict/dict-datas/get/excel`)
+  const headers = accessHeader();
+
+  fetch(`http://mugen.net/mugen/api/dict/dict-datas/get/excel`, {
+    method: 'GET',
+    headers: headers // 确保accessHeader()返回正确的headers对象
+  })
+      .then(response => {
+        if (response.status === 401) {
+          alert('登录过期，请重新登录');
+          // 这里可以跳转到登录页
+          return;
+        }
+        if (!response.ok) throw new Error('导出失败');
+        return response.blob();
+      })
+      .then(blob => {
+        // 创建临时链接触发下载
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Dict_${new Date().toLocaleString()}.xlsx`; // 设置文件名
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url); // 释放内存
+      })
+      .catch(error => {
+        console.error('导出错误:', error);
+        alert('导出失败，请稍后重试');
+      });
 }
 
 function uploadSuccess(data: any) {

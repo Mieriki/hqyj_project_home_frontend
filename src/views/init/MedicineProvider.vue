@@ -1,12 +1,12 @@
 <template>
   <div style="margin-bottom: 10px;">
     <el-row>
-      <el-input v-model="searchValue.typeName" style="width: 240px;" size="small" placeholder="请输入类型名称" type="text">
+      <el-input v-model="searchValue.providerName" style="width: 240px;" size="small" placeholder="请输入供应商名称" type="text">
         <template #prepend>
           <el-button @click="handleSearch" :icon="Search" />
         </template>
       </el-input>
-      <el-input v-model="searchValue.dictType" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入类型编码" type="text"></el-input>
+<!--      <el-input v-model="searchValue.keyword" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入关键字" type="text"></el-input>-->
       <el-button  @click="handleSearch" style="margin-left: 5px; width: 75px; height: 32px;" size="small" type="primary">搜索</el-button>
 
       <el-button type="primary" style="width: 80px; height: 32px;" size="small" @click="nextAdd">新增<el-icon><CirclePlus /></el-icon></el-button>
@@ -41,15 +41,14 @@
     </el-row>
   </div>
 
-  <el-table :data="dictTypeList" border @selection-change="handleSelectionChange" max-height=525>
-    <el-table-column type="selection" width="55">
-    </el-table-column>
-    <el-table-column label="类型名称" prop="typeName" width="270">
-    </el-table-column>
-    <el-table-column label="字典类型" prop="dictType" width="275">
-    </el-table-column>
-    <el-table-column label="备注" prop="remark" width="500">
-    </el-table-column>
+  <el-table :data="providerList" border @selection-change="handleSelectionChange" max-height=525>
+    <el-table-column type="selection" width="55"/>
+    <el-table-column prop="providerName" label="供应商名称" width="200"></el-table-column>
+    <el-table-column prop="providerCode" label="供应商编码" width="150"></el-table-column>
+    <el-table-column prop="contactName" label="联系人" width="150"></el-table-column>
+    <el-table-column prop="contactTel" label="联系电话" width="150"></el-table-column>
+    <el-table-column prop="bankAccount" label="银行账号" width="185"></el-table-column>
+    <el-table-column prop="providerAddress" label="供应商地址" width="200"></el-table-column>
     <el-table-column label="操作" fixed="right">
       <template #default="scope">
         <el-button size="small" type="warning" @click="handleEdit(scope.row)">编辑</el-button>
@@ -88,15 +87,24 @@
       v-model="addDialogVisible"
       width=620
       :before-close="handleClose">
-    <el-form :model="dictType" :rules="rules" ref="formRef" label-width="100px">
-      <el-form-item label="类型名称" prop="typeName" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.typeName"></el-input>
+    <el-form :model="provider" :rules="rules" ref="formRef" label-width="100px">
+      <el-form-item label="供应商名称" prop="providerName" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.providerName" placeholder="请输入供应商名称"></el-input>
       </el-form-item>
-      <el-form-item label="字典编码" prop="dictType" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.dictType"></el-input>
+      <el-form-item label="供应商编码" prop="providerCode" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.providerCode" placeholder="请输入供应商编码"></el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="remark" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.remark"></el-input>
+      <el-form-item label="联系人" prop="contactName" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.contactName" placeholder="请输入联系人"></el-input>
+      </el-form-item>
+      <el-form-item label="联系电话" prop="contactTel" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.contactTel" placeholder="请输入联系电话"></el-input>
+      </el-form-item>
+      <el-form-item label="银行账号" prop="bankAccount" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.bankAccount" placeholder="请输入银行账号"></el-input>
+      </el-form-item>
+      <el-form-item label="供应商地址" prop="providerAddress" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.providerAddress" placeholder="请输入供应商地址"></el-input>
       </el-form-item>
       <el-row style="display: flex; justify-content: center; align-items: center; ">
         <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="addSubmitForm">新增</el-button>
@@ -110,15 +118,24 @@
       v-model="editDialogVisible"
       width=620
       :before-close="handleClose">
-    <el-form :model="dictType" :rules="rules" ref="formRef" label-width="100px">
-      <el-form-item label="类型名称" prop="typeName" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.typeName"></el-input>
+    <el-form :model="provider" :rules="rules" ref="formRef" label-width="100px">
+      <el-form-item label="供应商名称" prop="providerName" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.providerName" placeholder="请输入供应商名称"></el-input>
       </el-form-item>
-      <el-form-item label="字典编码" prop="dictType" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.dictType" disabled></el-input>
+      <el-form-item label="供应商编码" prop="providerCode" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.providerCode" placeholder="请输入供应商编码" disabled></el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="remark" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="dictType.remark"></el-input>
+      <el-form-item label="联系人" prop="contactName" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.contactName" placeholder="请输入联系人"></el-input>
+      </el-form-item>
+      <el-form-item label="联系电话" prop="contactTel" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.contactTel" placeholder="请输入联系电话"></el-input>
+      </el-form-item>
+      <el-form-item label="银行账号" prop="bankAccount" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.bankAccount" placeholder="请输入银行账号"></el-input>
+      </el-form-item>
+      <el-form-item label="供应商地址" prop="providerAddress" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="provider.providerAddress" placeholder="请输入供应商地址"></el-input>
       </el-form-item>
       <el-row style="display: flex; justify-content: center; align-items: center; ">
         <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="editSubmitForm">修改</el-button>
@@ -130,44 +147,50 @@
 
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
-import { Search } from '@element-plus/icons-vue';
+import {CirclePlus, Search} from '@element-plus/icons-vue';
 import { get, post, accessHeader } from '@/net';
 import router from '@/router';
 
-let dictTypeList = ref([]);
+let providerList = ref([]);
 const addDialogVisible = ref(false)
 const editDialogVisible = ref(false)
 
 let selectedRowList = ref([])
 const count = ref(0)
 
-let searchValue = reactive({
 
+let searchValue = reactive({
+  providerName: '',
   currentPage: 1,
   pageSize: 10
 })
 
-interface DictType {
-  id: number;
-  typeName: string;
-  dictType: string;
-  remark: string;
-  status: string;
+interface Provider {
+  id: number,
+  providerCode: string,
+  providerName: string,
+  contactName: string,
+  contactTel: string,
+  bankAccount: string,
+  providerAddress: string,
+  status: string,
 }
 
-
-let dictType: DictType = reactive({
+let provider :Provider  = reactive({
   id: 0,
-  typeName: '',
-  dictType: '',
-  remark: '',
-  status: ''
+  providerCode: '',
+  providerName: '',
+  contactName: '',
+  contactTel: '',
+  bankAccount: '',
+  providerAddress: '',
+  status: '',
 })
 
 let fileName = ref("multipartFiles")
 let headers =ref(accessHeader())
 let fileList =ref([])
-let postUrl = ref("http://mugen.net/mugen/api/dict/dict-types/post/excel")
+let postUrl = ref("http://mugen.net/mugen/api/erp/providers/post/excel")
 
 const formRef = ref()
 // 页面初始化加载数据
@@ -177,8 +200,8 @@ onMounted(() => {
 
 // 初始化页面数据
 function initializePage() {
-  post(`/dict/dict-types/get`,searchValue , (data: any) => {
-    dictTypeList.value = data.dictTypeList
+  post(`/erp/providers/get`, searchValue , (data: any) => {
+    providerList.value = data.providerList
     count.value = Number(data.count)
   })
   handleClose()
@@ -187,11 +210,14 @@ function initializePage() {
 function handleClose() {
   addDialogVisible.value = false
   editDialogVisible.value = false
-  dictType.id = 0
-  dictType.typeName = ''
-  dictType.dictType = ''
-  dictType.remark = ''
-  dictType.status = ''
+  provider.id = 0
+  provider.providerCode = ''
+  provider.providerName = ''
+  provider.contactName = ''
+  provider.contactTel = ''
+  provider.bankAccount = ''
+  provider.providerAddress = ''
+  provider.status = ''
 }
 
 const handleSearch = () => {
@@ -217,24 +243,27 @@ function nextAdd() {
 }
 
 function handleEdit(row) {
-  dictType.id = row.id
-  dictType.typeName = row.typeName
-  dictType.dictType = row.dictType
-  dictType.remark = row.remark
-  dictType.status = row.status
+  provider.id = row.id
+  provider.providerCode = row.providerCode
+  provider.providerName = row.providerName
+  provider.contactName = row.contactName
+  provider.contactTel = row.contactTel
+  provider.bankAccount = row.bankAccount
+  provider.providerAddress = row.providerAddress
+  provider.status = row.status
   editDialogVisible.value = true
 }
 
 function addSubmitForm() {
   formRef.value.validate((valid) => {
     if (valid) {
-      post(`/dict/dict-types/post`, dictType, () => {
+      post(`/erp/providers/post`, provider, () => {
         ElMessage.success('添加成功!')
         initializePage()
       })
     } else {
       // 表单验证失败，不执行提交操作
-      ElMessage.warning('请完整填写表单内容!');
+      ElMessage.warning('请完整填写注册表单内容!');
       return false;
     }
   });
@@ -243,25 +272,25 @@ function addSubmitForm() {
 function editSubmitForm() {
   formRef.value.validate((valid) => {
     if(valid) {
-      post('/dict/dict-types/put', dictType, () => {
+      post('/erp/providers/put', provider, () => {
         ElMessage.success('修改成功!')
         initializePage()
       })
     } else {
-      ElMessage.warning('请完整填写表单内容!')
+      ElMessage.warning('请完整填写注册表单内容!')
     }
   });
 }
 
 function handleDelete(row) {
-  get(`/dict/dict-types/delete/${row.id}`, () => {
+  get(`/erp/providers/delete/${row.id}`, () => {
     ElMessage.success('删除成功!')
     initializePage()
   })
 }
 
 function handleDeleteList() {
-  post(`/dict/dict-types/delete`, selectedRowList.value.map(row => row.id), () => {
+  post(`/erp/providers/delete`, selectedRowList.value.map(row => row.id), () => {
     ElMessage.success('删除成功!')
     initializePage()
   })
@@ -270,7 +299,7 @@ function handleDeleteList() {
 function exportData() {
   const headers = accessHeader();
 
-  fetch(`http://mugen.net/mugen/api/dict/dict-types/get/excel`, {
+  fetch('http://mugen.net/mugen/api/erp/providers/get/excel', {
     method: 'GET',
     headers: headers // 确保accessHeader()返回正确的headers对象
   })
@@ -288,7 +317,7 @@ function exportData() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `DictType_${new Date().toLocaleString()}.xlsx`; // 设置文件名
+        a.download = `Provider_${new Date().toLocaleString()}.xlsx`; // 设置文件名
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -310,17 +339,33 @@ function uploadSuccess(data) {
 }
 
 let rules = {
-  typeName: [
-    { required: true, message: '请输入类型名称', trigger: 'blur' },
+  providerName: [
+    { required: true, message: '请输入供应商名称', trigger: 'blur' },
     { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
   ],
-  dictType: [
-    { required: true, message: '请输入字典类型', trigger: 'blur' },
+  providerCode: [
+    { required: true, message: '请输入供应商编码', trigger: 'blur' },
     { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
   ],
-  remark: [
-    { min: 2, max: 200, message: '长度在 2 到 200 个字符', trigger: 'blur' }
-  ]
+  contactName: [
+    { required: true, message: '请输入联系人', trigger: 'blur' },
+    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+  ],
+  contactTel: [
+    { required: true, message: '请输入联系电话', trigger: 'blur' },
+    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' },
+    { pattern: /^[0-9]{3,12}-[0-9]{5,12}$|^1[34578]\d{9}$/, message: '请输入正确的电话号码', trigger: 'blur' }
+  ],
+  bankAccount: [
+    { required: true, message: '请输入银行账号', trigger: 'blur' },
+    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' },
+    { pattern: /^[0-9]+$/, message: '银行账号只能为数字', trigger: 'blur' }
+  ],
+  providerAddress: [
+    { required: true, message: '请输入供应商地址', trigger: 'blur' },
+    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+  ],
+
 };
 </script>
 

@@ -30,132 +30,134 @@
       </el-card>
     </el-col>
     <el-col :span="20" style="padding-left: 10px;">
-  <div style="margin-bottom: 10px;">
-    <el-row>
-      <el-input v-model="searchValue.name" style="width: 240px;" size="small" placeholder="请输入姓名或用户名"
-                type="text">
-        <template #prepend>
-          <el-button @click="handleSearch" :icon="Search"/>
-        </template>
-      </el-input>
-      <!--			<el-input v-model="searchValue.address" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入地址" type="text"></el-input>-->
-      <el-button @click="handleSearch" style="margin-left: 5px; width: 75px; height: 32px;" size="small" type="primary">
-        搜索
-      </el-button>
+      <div style="margin-bottom: 10px;">
+        <el-row>
+          <el-input v-model="searchValue.name" style="width: 240px;" size="small" placeholder="请输入姓名或用户名"
+                    type="text">
+            <template #prepend>
+              <el-button @click="handleSearch" :icon="Search"/>
+            </template>
+          </el-input>
+          <!--			<el-input v-model="searchValue.address" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入地址" type="text"></el-input>-->
+          <el-button @click="handleSearch" style="margin-left: 5px; width: 75px; height: 32px;" size="small"
+                     type="primary">
+            搜索
+          </el-button>
 
-      <el-button type="primary" style="width: 80px; height: 32px;" size="small" @click="nextAdd">新增
-        <el-icon>
-          <CirclePlus/>
-        </el-icon>
-      </el-button>
-
-      <el-popconfirm
-          confirm-button-text="删除"
-          cancel-button-text="点错了"
-          :icon="InfoFilled"
-          confirm-button-type="danger"
-          icon-color="#ef0004"
-          title="确认要删除此这些客户?"
-          :width="200"
-          @confirm="handleDeleteList()"
-      >
-        <template #reference>
-          <el-button type="danger" style="margin-left: 5px; width: 80px; height: 32px;" size="small">批量删除
+          <el-button type="primary" style="width: 80px; height: 32px;" size="small" @click="nextAdd">新增
             <el-icon>
-              <Remove/>
+              <CirclePlus/>
             </el-icon>
           </el-button>
-        </template>
-      </el-popconfirm>
 
-      <el-upload
-          list-type="text"
-          accept=".xls, .xlsx"
-          :file-list="fileList"
-          :headers="headers"
-          :action="postUrl"
-          :multiple="false"
-          :show-file-list="false"
-          :on-success="uploadSuccess">
-        <el-button type="primary" style="margin-left: 5px; width: 80px; height: 32px;" size="small">导入
-          <el-icon>
-            <Download/>
-          </el-icon>
-        </el-button>
-      </el-upload>
-      <el-button type="primary" style="margin-left: 5px; width: 80px; height: 32px;" size="small" @click="exportData">导出
-        <el-icon>
-          <Upload/>
-        </el-icon>
-      </el-button>
-    </el-row>
-  </div>
+          <el-popconfirm
+              confirm-button-text="删除"
+              cancel-button-text="点错了"
+              :icon="InfoFilled"
+              confirm-button-type="danger"
+              icon-color="#ef0004"
+              title="确认要删除此这些客户?"
+              :width="200"
+              @confirm="handleDeleteList()"
+          >
+            <template #reference>
+              <el-button type="danger" style="margin-left: 5px; width: 80px; height: 32px;" size="small">批量删除
+                <el-icon>
+                  <Remove/>
+                </el-icon>
+              </el-button>
+            </template>
+          </el-popconfirm>
 
-  <el-table :data="adminList" border @selection-change="handleSelectionChange"
-            max-height=525>
-    <el-table-column type="selection" width="55"/>
-    <el-table-column label="头像" fixed width="55">
-      <template #default="scope">
-        <el-avatar :src="scope.row.picture" :size="30"></el-avatar>
-      </template>
-    </el-table-column>
-    <el-table-column prop="account" label="用户名" width="100">
-    </el-table-column>
-    <el-table-column prop="username" label="姓名" width="100">
-    </el-table-column>
-    <el-table-column prop="genderStr" label="性别" width="60">
-    </el-table-column>
-    <el-table-column prop="deptName" label="部门" width="100">
-    </el-table-column>
-    <el-table-column prop="phone" label="电话" width="140">
-    </el-table-column>
-    <el-table-column prop="email" label="邮箱" width="180">
-    </el-table-column>
-    <el-table-column prop="introduction" label="备注" width="180">
-    </el-table-column>
-    <el-table-column label="操作" fixed="right" width="220">
-      <template #default="scope">
-        <el-button size="small" type="primary" @click="handleRole(scope.row)">
-          <el-icon>
-            <Avatar/>
-          </el-icon>
-          角色
-        </el-button>
-        <el-button size="small" type="warning" @click="handleEdit(scope.row)">编辑</el-button>
-        <el-popconfirm
-            confirm-button-text="删除"
-            cancel-button-text="点错了"
-            :icon="InfoFilled"
-            confirm-button-type="danger"
-            icon-color="#ef0004"
-            title="确认要删除此客户?"
-            :width="200"
-            @confirm="handleDelete(scope.row)"
-        >
-          <template #reference>
-            <el-button type="danger" size="small">删除</el-button>
+          <el-upload
+              list-type="text"
+              accept=".xls, .xlsx"
+              :file-list="fileList"
+              :headers="headers"
+              :action="postUrl"
+              :multiple="false"
+              :show-file-list="false"
+              :on-success="uploadSuccess">
+            <el-button type="primary" style="margin-left: 5px; width: 80px; height: 32px;" size="small">导入
+              <el-icon>
+                <Download/>
+              </el-icon>
+            </el-button>
+          </el-upload>
+          <el-button type="primary" style="margin-left: 5px; width: 80px; height: 32px;" size="small"
+                     @click="exportData">导出
+            <el-icon>
+              <Upload/>
+            </el-icon>
+          </el-button>
+        </el-row>
+      </div>
+
+      <el-table :data="adminList" border @selection-change="handleSelectionChange"
+                max-height=525>
+        <el-table-column type="selection" width="55"/>
+        <el-table-column label="头像" fixed width="55">
+          <template #default="scope">
+            <el-avatar :src="scope.row.picture" :size="30"></el-avatar>
           </template>
-        </el-popconfirm>
-      </template>
-    </el-table-column>
-    <el-table-column label="启用" fixed="right" width="80">
-      <template #default="scope">
-        <el-popconfirm
-            confirm-button-text="确认"
-            cancel-button-text="点错了"
-            :icon="InfoFilled"
-            confirm-button-type="danger"
-            icon-color="#ef0004"
-            title="确认要进行此操作?"
-            :width="200"
-            @confirm="handleEnabled(scope.row)">
-          <template #reference>
-            <el-switch v-model="scope.row.enabled" @click="scope.row.enabled = !scope.row.enabled"/>
+        </el-table-column>
+        <el-table-column prop="account" label="用户名" width="100">
+        </el-table-column>
+        <el-table-column prop="username" label="姓名" width="100">
+        </el-table-column>
+        <el-table-column prop="genderStr" label="性别" width="60">
+        </el-table-column>
+        <el-table-column prop="deptName" label="部门" width="100">
+        </el-table-column>
+        <el-table-column prop="phone" label="电话" width="140">
+        </el-table-column>
+        <el-table-column prop="email" label="邮箱" width="180">
+        </el-table-column>
+        <el-table-column prop="introduction" label="备注" width="180">
+        </el-table-column>
+        <el-table-column label="操作" fixed="right" width="220">
+          <template #default="scope">
+            <el-button size="small" type="primary" @click="handleRole(scope.row)">
+              <el-icon>
+                <Avatar/>
+              </el-icon>
+              角色
+            </el-button>
+            <el-button size="small" type="warning" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-popconfirm
+                confirm-button-text="删除"
+                cancel-button-text="点错了"
+                :icon="InfoFilled"
+                confirm-button-type="danger"
+                icon-color="#ef0004"
+                title="确认要删除此客户?"
+                :width="200"
+                @confirm="handleDelete(scope.row)"
+            >
+              <template #reference>
+                <el-button type="danger" size="small">删除</el-button>
+              </template>
+            </el-popconfirm>
           </template>
-        </el-popconfirm>
-      </template>
-    </el-table-column>
-  </el-table>
+        </el-table-column>
+        <el-table-column label="启用" fixed="right" width="80">
+          <template #default="scope">
+            <el-popconfirm
+                confirm-button-text="确认"
+                cancel-button-text="点错了"
+                :icon="InfoFilled"
+                confirm-button-type="danger"
+                icon-color="#ef0004"
+                title="确认要进行此操作?"
+                :width="200"
+                @confirm="handleEnabled(scope.row)">
+              <template #reference>
+                <el-switch v-model="scope.row.enabled" @click="scope.row.enabled = !scope.row.enabled"/>
+              </template>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+      </el-table>
 
       <div style="padding: 10px 0; position: absolute; bottom: -10px;">
         <el-pagination
@@ -382,7 +384,7 @@ function initializePage() {
     })
     count.value = Number(data.count)
   })
-  get(`/sso/depts/get` , (data) => {
+  get(`/sso/depts/get`, (data) => {
     deptList.value = data
   })
   handleClose()
@@ -555,7 +557,36 @@ function handleDeleteList() {
 }
 
 function exportData() {
-  window.open(`http://mieriki.net/mugen/api/sso/users/get/excel`)
+  const headers = accessHeader();
+
+  fetch(`http://mieriki.net/mugen/api/sso/users/get/excel`, {
+    method: 'GET',
+    headers: headers // 确保accessHeader()返回正确的headers对象
+  })
+      .then(response => {
+        if (response.status === 401) {
+          alert('登录过期，请重新登录');
+          // 这里可以跳转到登录页
+          return;
+        }
+        if (!response.ok) throw new Error('导出失败');
+        return response.blob();
+      })
+      .then(blob => {
+        // 创建临时链接触发下载
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `User_${new Date().toLocaleString()}.xlsx`; // 设置文件名
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url); // 释放内存
+      })
+      .catch(error => {
+        console.error('导出错误:', error);
+        alert('导出失败，请稍后重试');
+      });
 }
 
 function uploadSuccess(data) {
@@ -586,7 +617,11 @@ const rules = {
   password: [
     {required: true, message: '请输入密码', trigger: 'blur'},
     {min: 6, max: 50, message: '密码长度必须在6到50个字符之间', trigger: 'blur'},
-    { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z_@.]{6,50}$/, message: '密码必须包含字母、数字或特殊字符', trigger: 'blur' },
+    {
+      pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z_@.]{6,50}$/,
+      message: '密码必须包含字母、数字或特殊字符',
+      trigger: 'blur'
+    },
   ],
   phone: [
     {required: true, message: '请输入电话号码', trigger: 'blur'},

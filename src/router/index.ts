@@ -14,6 +14,11 @@ const router = createRouter({
 					path: '/',
 					name: '首页',
 					component: () => import('@/views/index_view/HomeView.vue')
+				},
+				{
+					path: '/main/user-info',
+					name: '用户信息',
+					component: () => import('@/views/init/UserInfo.vue')
 				}
 			]
 		}, {
