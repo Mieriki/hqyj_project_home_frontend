@@ -9,7 +9,7 @@
             <span style="font-size: 16px; font-weight: 600; color: #303133;">参数分类</span>
           </div>
         </template>
-        <el-scrollbar wrap-class="scrollbar-wrapper" view-class="scrollbar-view" style="width: 100%; top: -15px;">
+        <el-scrollbar wrap-class="scrollbar-wrapper" view-class="scrollbar-view" max-height="68vh" style="width: 100%; top: -15px;">
           <div class="category-list">
             <div
                 class="category-item"
@@ -604,8 +604,7 @@ const rules = {
     { required: true, message: '请选择参数分类', trigger: 'blur' }
   ],
   dictValue: [
-    { required: true, message: '请输入参数值', trigger: 'blur' },
-    { min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur' }
+    { required: true, message: '请输入参数值', trigger: 'blur' }
   ],
   status: [
     { required: true, message: '请选择参数类型', trigger: 'blur' }

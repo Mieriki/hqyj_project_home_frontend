@@ -1,7 +1,7 @@
 <template>
   <div style="margin-bottom: 10px;">
     <el-row>
-      <el-input v-model="searchValue.producterName" style="width: 240px;" size="small" placeholder="请输入厂家名称" type="text">
+      <el-input v-model="searchValue.itemName" style="width: 240px;" size="small" placeholder="请输检查入名称" type="text">
         <template #prepend>
           <el-button @click="handleSearch" :icon="Search" />
         </template>
@@ -41,19 +41,19 @@
     </el-row>
   </div>
 
-  <el-table :data="producterList" border @selection-change="handleSelectionChange" max-height=525>
+  <el-table :data="checkItemList" border @selection-change="handleSelectionChange" max-height="525">
     <el-table-column type="selection" width="55"/>
-    <el-table-column prop="producterName" label="厂商名称" width="220">
+    <el-table-column prop="itemName" label="检查项目名称" width="250"></el-table-column>
+    <el-table-column prop="unitPrice" label="单价" width="120"></el-table-column>
+    <el-table-column prop="cost" label="成本" width="120"></el-table-column>
+    <el-table-column prop="unit" label="单位" width="120"></el-table-column>
+    <el-table-column prop="type" label="类型" width="150">
+      <template #default="scope">
+        {{checkTypeList.find((item) => item.dictCode === scope.row.type)?.dictName}}
+      </template>
     </el-table-column>
-    <el-table-column prop="producterCode" label="厂商编码" width="150">
-    </el-table-column>
-    <el-table-column prop="producterAddress" label="厂商地址" width="200">
-    </el-table-column>
-    <el-table-column prop="producterPerson" label="联系人" width="100">
-    </el-table-column>
-    <el-table-column prop="producterTel" label="厂商电话" width="150">
-    </el-table-column>
-    <el-table-column prop="keywords" label="关键字" width="200">
+<!--    <el-table-column prop="status" label="状态" width="100"></el-table-column>-->
+    <el-table-column prop="keywords" label="关键字" width="250">
       <template #default="scope">
         <el-row v-if="scope.row.keywords">
           <el-tag type="primary" v-for="(item, index) in scope.row.keywords.split(',')" :key="index" style="margin-right: 2px;">
@@ -100,21 +100,23 @@
       v-model="addDialogVisible"
       width=620
       :before-close="handleClose">
-    <el-form :model="producter" :rules="rules" ref="formRef" label-width="100px">
-      <el-form-item label="厂商名称" prop="producterName" style="width: 505px; margin-bottom: 20px;">
-        <el-input v-model="producter.producterName" placeholder="请输入厂商名称"></el-input>
+    <el-form :model="checkItem" :rules="rules" ref="formRef" label-width="100px">
+      <el-form-item label="项目名称" prop="itemName" style="width: 505px; margin-bottom: 20px;">
+        <el-input v-model="checkItem.itemName" placeholder="请输入检查项目名称"></el-input>
       </el-form-item>
-      <el-form-item label="厂商编码" prop="producterCode" style="width: 505px; margin-bottom: 20px;">
-        <el-input v-model="producter.producterCode" placeholder="请输入厂商编码"></el-input>
+      <el-form-item label="单价" prop="unitPrice" style="width: 505px; margin-bottom: 20px;">
+        <el-input v-model="checkItem.unitPrice" placeholder="请输入单价"></el-input>
       </el-form-item>
-      <el-form-item label="厂商地址" prop="producterAddress" style="width: 505px; margin-bottom: 20px;">
-        <el-input v-model="producter.producterAddress" placeholder="请输入厂商地址"></el-input>
+      <el-form-item label="成本" prop="cost" style="width: 505px; margin-bottom: 20px;">
+        <el-input v-model="checkItem.cost" placeholder="请输入成本"></el-input>
       </el-form-item>
-      <el-form-item label="联系人" prop="producterPerson" style="width: 505px; margin-bottom: 20px;">
-        <el-input v-model="producter.producterPerson" placeholder="请输入联系人"></el-input>
+      <el-form-item label="单位" prop="unit" style="width: 505px; margin-bottom: 20px;">
+        <el-input v-model="checkItem.unit" placeholder="请输入单位"></el-input>
       </el-form-item>
-      <el-form-item label="厂商电话" prop="producterTel" style="width: 505px; margin-bottom: 20px;">
-        <el-input v-model="producter.producterTel" placeholder="请输入厂商电话"></el-input>
+      <el-form-item label="类型" prop="type" style="width: 505px; margin-bottom: 20px;">
+        <el-select v-model="checkItem.type" placeholder="请选择类型">
+          <el-option v-for="(item, index) in checkTypeList" :key="index" :label="item.dictName" :value="item.dictCode"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="关键字" style="width: 505px; margin-bottom: 20px;">
         <el-row style="margin-bottom: 20px;">
@@ -143,21 +145,23 @@
       v-model="editDialogVisible"
       width=620
       :before-close="handleClose">
-    <el-form :model="producter" :rules="rules" ref="formRef" label-width="100px">
-      <el-form-item label="厂商名称" prop="producterName" style="width: 505px; margin-bottom: 20px;">
-        <el-input v-model="producter.producterName" placeholder="请输入厂商名称"></el-input>
+    <el-form :model="checkItem" :rules="rules" ref="formRef" label-width="100px">
+      <el-form-item label="项目名称" prop="itemName" style="width: 505px; margin-bottom: 20px;">
+        <el-input v-model="checkItem.itemName" placeholder="请输入检查项目名称"></el-input>
       </el-form-item>
-      <el-form-item label="厂商编码" prop="producterCode" style="width: 505px; margin-bottom: 20px;">
-        <el-input v-model="producter.producterCode" placeholder="请输入厂商编码" disabled></el-input>
+      <el-form-item label="单价" prop="unitPrice" style="width: 505px; margin-bottom: 20px;">
+        <el-input v-model="checkItem.unitPrice" placeholder="请输入单价"></el-input>
       </el-form-item>
-      <el-form-item label="厂商地址" prop="producterAddress" style="width: 505px; margin-bottom: 20px;">
-        <el-input v-model="producter.producterAddress" placeholder="请输入厂商地址"></el-input>
+      <el-form-item label="成本" prop="cost" style="width: 505px; margin-bottom: 20px;">
+        <el-input v-model="checkItem.cost" placeholder="请输入成本"></el-input>
       </el-form-item>
-      <el-form-item label="联系人" prop="producterPerson" style="width: 505px; margin-bottom: 20px;">
-        <el-input v-model="producter.producterPerson" placeholder="请输入联系人"></el-input>
+      <el-form-item label="单位" prop="unit" style="width: 505px; margin-bottom: 20px;">
+        <el-input v-model="checkItem.unit" placeholder="请输入单位"></el-input>
       </el-form-item>
-      <el-form-item label="厂商电话" prop="producterTel" style="width: 505px; margin-bottom: 20px;">
-        <el-input v-model="producter.producterTel" placeholder="请输入厂商电话"></el-input>
+      <el-form-item label="类型" prop="type" style="width: 505px; margin-bottom: 20px;">
+        <el-select v-model="checkItem.type" placeholder="请选择类型">
+          <el-option v-for="(item, index) in checkTypeList" :key="index" :label="item.dictName" :value="item.dictCode"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="关键字" style="width: 505px; margin-bottom: 20px;">
         <el-row style="margin-bottom: 20px;">
@@ -188,8 +192,8 @@ import {CirclePlus, Search} from '@element-plus/icons-vue';
 import { get, post, accessHeader } from '@/net';
 import router from '@/router';
 
-let producterList = ref([]);
-
+let checkItemList = ref([]);
+let checkTypeList = ref([])
 const addDialogVisible = ref(false)
 const editDialogVisible = ref(false)
 
@@ -200,39 +204,38 @@ let keywordList = ref([])
 let keyword = ref('')
 
 let searchValue = reactive({
-  producterName: '',
-  producterCode: '',
+  itemName: '',
   keyword: '',
   currentPage: 1,
   pageSize: 10
 })
 
-interface Producter {
+interface CheckItem {
   id: number,
-  producterName: string,
-  producterCode: string,
-  producterAddress: string,
-  producterTel: string,
-  producterPerson: string,
+  itemName: string,
   keywords: string,
-  status: string,
+  unitPrice: number,
+  cost: number,
+  unit: string,
+  type: string,
+  status: string
 }
 
-let producter : Producter = reactive({
+let checkItem : CheckItem = reactive({
   id: 0,
-  producterName: '',
-  producterCode: '',
-  producterAddress: '',
-  producterTel: '',
-  producterPerson: '',
+  itemName: '',
   keywords: '',
-  status: '',
+  unitPrice: 0,
+  cost: 0,
+  unit: '',
+  type: '',
+  status: ''
 })
 
 let fileName = ref("multipartFiles")
 let headers =ref(accessHeader())
 let fileList =ref([])
-let postUrl = ref("http://mugen.net/mugen/api/erp/producters/post/excel")
+let postUrl = ref("http://mugen.net/mugen/api/his/check-items/post/excel")
 
 const formRef = ref()
 // 页面初始化加载数据
@@ -242,9 +245,12 @@ onMounted(() => {
 
 // 初始化页面数据
 function initializePage() {
-  post(`/erp/producters/get`, searchValue , (data: any) => {
-    producterList.value = data.producterList
+  post(`/his/check-items/get`, searchValue , (data: any) => {
+    checkItemList.value = data.checkItemList
     count.value = Number(data.count)
+  })
+  get(`/dict/dict-datas/get/list/check-type`, (data: any) => {
+    checkTypeList.value = data
   })
   handleClose()
 };
@@ -252,14 +258,14 @@ function initializePage() {
 function handleClose() {
   addDialogVisible.value = false
   editDialogVisible.value = false
-  producter.id = 0
-  producter.producterName = ''
-  producter.producterCode = ''
-  producter.producterAddress = ''
-  producter.producterTel = ''
-  producter.producterPerson = ''
-  producter.keywords = ''
-  producter.status = ''
+  checkItem.id = 0
+  checkItem.itemName = ''
+  checkItem.keywords = ''
+  checkItem.unitPrice = 0
+  checkItem.cost = 0
+  checkItem.unit = ''
+  checkItem.type = ''
+  checkItem.status = ''
   keywordList.value = []
   keyword.value = ''
 }
@@ -287,14 +293,14 @@ function nextAdd() {
 }
 
 function handleEdit(row) {
-  producter.id = row.id
-  producter.producterName = row.producterName
-  producter.producterCode = row.producterCode
-  producter.producterAddress = row.producterAddress
-  producter.producterTel = row.producterTel
-  producter.producterPerson = row.producterPerson
-  producter.keywords = row.keywords
-  producter.status = row.status
+  checkItem.id = row.id
+  checkItem.itemName = row.itemName
+  checkItem.keywords = row.keywords
+  checkItem.unitPrice = row.unitPrice
+  checkItem.cost = row.cost
+  checkItem.unit = row.unit
+  checkItem.type = row.type
+  checkItem.status = row.status
   keywordList.value = row.keywords ? row.keywords.split(',') : []
   editDialogVisible.value = true
 }
@@ -302,8 +308,8 @@ function handleEdit(row) {
 function addSubmitForm() {
   formRef.value.validate((valid) => {
     if (valid) {
-      producter.keywords = keywordList.value.join(',')
-      post(`/erp/producters/post`, producter, () => {
+      checkItem.keywords = keywordList.value.join(',')
+      post(`/his/check-items/post`, checkItem, () => {
         ElMessage.success('添加成功!')
         initializePage()
       })
@@ -318,8 +324,8 @@ function addSubmitForm() {
 function editSubmitForm() {
   formRef.value.validate((valid) => {
     if(valid) {
-      producter.keywords = keywordList.value.join(',')
-      post('/erp/producters/put', producter, () => {
+      checkItem.keywords = keywordList.value.join(',')
+      post('/his/check-items/put', checkItem, () => {
         ElMessage.success('修改成功!')
         initializePage()
       })
@@ -330,14 +336,14 @@ function editSubmitForm() {
 }
 
 function handleDelete(row) {
-  get(`/erp/producters/delete/${row.id}`, () => {
+  get(`/his/check-items/delete/${row.id}`, () => {
     ElMessage.success('删除成功!')
     initializePage()
   })
 }
 
 function handleDeleteList() {
-  post(`/erp/producters/delete`, selectedRowList.value.map(row => row.id), () => {
+  post(`/his/check-items/delete`, selectedRowList.value.map(row => row.id), () => {
     ElMessage.success('删除成功!')
     initializePage()
   })
@@ -346,7 +352,7 @@ function handleDeleteList() {
 function exportData() {
   const headers = accessHeader();
 
-  fetch(`http://mugen.net/mugen/api/erp/producters/get/excel`, {
+  fetch(`http://mugen.net/mugen/api/his/check-items/get/excel`, {
     method: 'GET',
     headers: headers // 确保accessHeader()返回正确的headers对象
   })
@@ -401,27 +407,32 @@ function deleteKeyword(item, index) {
 }
 
 let rules = {
-  producterName: [
-    { required: true, message: '请输入厂商名称', trigger: 'blur' },
+  itemName: [
+    { required: true, message: '请输入项目名称', trigger: 'blur' },
     { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
   ],
-  producterCode: [
-    { required: true, message: '请输入厂商编码', trigger: 'blur' },
-    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+  unitPrice: [
+    { required: true, message: '请输入单价', trigger: 'blur' },
+    {
+      pattern: /^\d+(\.\d+)?$/,
+      message: '请输入正确的数字格式',
+      trigger: 'blur'
+    }
   ],
-  producterAddress: [
-    { required: true, message: '请输入厂商地址', trigger: 'blur' },
-    { min: 2, max: 200, message: '长度在 2 到 200 个字符', trigger: 'blur' }
+  cost: [
+    { required: true, message: '请输入成本', trigger: 'blur' },
+    {
+      pattern: /^\d+(\.\d+)?$/,
+      message: '请输入正确的数字格式',
+      trigger: 'blur'
+    }
   ],
-  producterPerson: [
-    { required: true, message: '请输入联系人', trigger: 'blur' },
-    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+  unit: [
+    { required: true, message: '请输入单位', trigger: 'blur' },
   ],
-  producterTel: [
-    { required: true, message: '请输入厂商电话', trigger: 'blur' },
-    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' },
-    { pattern: /^[0-9]{3,12}-[0-9]{5,12}$|^1[34578]\d{9}$/, message: '请输入正确的电话号码', trigger: 'blur' }
-  ],
+  type: [
+    { required: true, message: '请选择类型', trigger: 'blur' }
+  ]
 };
 </script>
 

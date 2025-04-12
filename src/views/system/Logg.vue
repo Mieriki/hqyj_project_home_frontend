@@ -8,7 +8,7 @@
             <el-button @click="handleSearch" :icon="Search"/>
           </template>
           <template #append>
-            <el-select v-model="searchValue.businessType" filterable placeholder="操作类型" style="width: 140px;">
+            <el-select v-model="searchValue.businessType" placeholder="操作类型" style="width: 140px;">
               <el-option key="" label="无" value=""></el-option>
               <el-option v-for="item in bussSet" :key="item" :label="item" :value="item"></el-option>
             </el-select>
@@ -96,7 +96,7 @@
       <el-descriptions-item label="操作模块" label-width="120px">
         <el-tag type="primary">{{ log.businessType }}</el-tag>
       </el-descriptions-item>
-      <el-descriptions-item label="操作类型" label-width="120px">
+      <el-descriptions-item label="操作类型" label-width="130px">
         <div style="word-break: break-all; white-space: pre-wrap;">{{ log.operation }}</div>
       </el-descriptions-item>
       <el-descriptions-item label="方法名" label-width="120px">

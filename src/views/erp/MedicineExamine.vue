@@ -1,12 +1,12 @@
 <template>
   <div style="margin-bottom: 10px;">
     <el-row>
-      <el-input v-model="searchValue.regName" style="width: 240px;" size="small" placeholder="请输入挂号项目名称" type="text">
+      <el-input v-model="searchValue.contact" style="width: 240px;" size="small" placeholder="请输入联系人" type="text">
         <template #prepend>
           <el-button @click="handleSearch" :icon="Search" />
         </template>
       </el-input>
-<!--      <el-input v-model="searchValue.address" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入地址" type="text"></el-input>-->
+      <el-input v-model="searchValue.address" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入地址" type="text"></el-input>
       <el-button  @click="handleSearch" style="margin-left: 5px; width: 75px; height: 32px;" size="small" type="primary">搜索</el-button>
 
       <el-button type="primary" style="width: 80px; height: 32px;" size="small" @click="nextAdd">新增<el-icon><CirclePlus /></el-icon></el-button>
@@ -26,44 +26,56 @@
         </template>
       </el-popconfirm>
 
-      <el-upload
-          list-type="text"
-          accept=".xls, .xlsx"
-          :file-list="fileList"
-          :headers="headers"
-          :action="postUrl"
-          :multiple="false"
-          :show-file-list="false"
-          :on-success="uploadSuccess">
-        <el-button type="primary" style="margin-left: 5px; width: 80px; height: 32px;" size="small">导入<el-icon><Download /></el-icon></el-button>
-      </el-upload>
+<!--      <el-upload-->
+<!--          list-type="text"-->
+<!--          accept=".xls, .xlsx"-->
+<!--          :file-list="fileList"-->
+<!--          :headers="headers"-->
+<!--          :action="postUrl"-->
+<!--          :multiple="false"-->
+<!--          :show-file-list="false"-->
+<!--          :on-success="uploadSuccess">-->
+<!--        <el-button type="primary" style="margin-left: 5px; width: 80px; height: 32px;" size="small">导入<el-icon><Download /></el-icon></el-button>-->
+<!--      </el-upload>-->
       <el-button type="primary" style="margin-left: 5px; width: 80px; height: 32px;" size="small" @click="exportData">导出<el-icon><Upload /></el-icon></el-button>
     </el-row>
   </div>
 
-  <el-table :data="registeredList" border @selection-change="handleSelectionChange" max-height=525>
+  <el-table :data="purchaseList" border @selection-change="handleSelectionChange" max-height=525>
     <el-table-column type="selection" width="55"/>
-    <el-table-column label="挂号编号" prop="id" width="300"></el-table-column>
-    <el-table-column label="挂号项目名称" prop="regName" width="350"></el-table-column>
-    <el-table-column label="挂号费用" prop="regFee" width="250"></el-table-column>
-<!--    <el-table-column label="状态" prop="status" width="100"></el-table-column>-->
+    <el-table-column prop="applyUserName" label="申请人姓名" width="200"></el-table-column>
+    <el-table-column prop="tradeTotalAmount" label="交易总金额" width="120"></el-table-column>
+    <el-table-column prop="auditMsg" label="审核信息" width="150"></el-table-column>
+    <el-table-column prop="status" label="状态" width="200">
+      <template #default="scope">
+        {{dictDataList.find((item) => item.dictCode === scope.row.status)?.dictName}}
+      </template>
+    </el-table-column>
+    <el-table-column prop="info" label="信息" width="300"></el-table-column>
     <el-table-column label="操作" fixed="right">
       <template #default="scope">
-        <el-button size="small" type="warning" @click="handleEdit(scope.row)">编辑</el-button>
-        <el-popconfirm
-            confirm-button-text="删除"
-            cancel-button-text="点错了"
-            :icon="InfoFilled"
-            confirm-button-type="danger"
-            icon-color="#ef0004"
-            title="确认要删除此客户?"
-            :width="200"
-            @confirm="handleDelete(scope.row)"
-        >
-          <template #reference>
-            <el-button type="danger" size="small">删除</el-button>
-          </template>
-        </el-popconfirm>
+<!--        <el-button size="small" type="warning" @click="handleEdit(scope.row)">编辑</el-button>-->
+<!--        <el-popconfirm-->
+<!--            confirm-button-text="删除"-->
+<!--            cancel-button-text="点错了"-->
+<!--            :icon="InfoFilled"-->
+<!--            confirm-button-type="danger"-->
+<!--            icon-color="#ef0004"-->
+<!--            title="确认要删除此客户?"-->
+<!--            :width="200"-->
+<!--            @confirm="handleDelete(scope.row)"-->
+<!--        >-->
+<!--          <template #reference>-->
+<!--            <el-button type="danger" size="small">删除</el-button>-->
+<!--          </template>-->
+<!--        </el-popconfirm>-->
+
+        <el-button size="small" type="primary" plain @click="handleEdit(scope.row)">
+          <el-icon>
+            <View/>
+          </el-icon>
+          详情
+        </el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -85,13 +97,8 @@
       v-model="addDialogVisible"
       width=620
       :before-close="handleClose">
-    <el-form :model="registered" :rules="rules" ref="formRef" label-width="100px">
-      <el-form-item label="挂号名称" prop="regName" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="registered.regName" placeholder="请输入挂号项目名称"></el-input>
-      </el-form-item>
-      <el-form-item label="挂号费用" prop="regFee" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="registered.regFee" placeholder="请输入挂号费用"></el-input>
-      </el-form-item>
+    <el-form :model="purchases" :rules="rules" ref="formRef" label-width="100px">
+
       <el-row style="display: flex; justify-content: center; align-items: center; ">
         <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="addSubmitForm">新增</el-button>
         <el-button type="info" style="width: 200px; margin-top: 20px; margin-left: 60px;" @click="handleClose">取消</el-button>
@@ -104,16 +111,18 @@
       v-model="editDialogVisible"
       width=620
       :before-close="handleClose">
-    <el-form :model="registered" :rules="rules" ref="formRef" label-width="100px">
-      <el-form-item label="挂号名称" prop="regName" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="registered.regName" placeholder="请输入挂号项目名称"></el-input>
-      </el-form-item>
-      <el-form-item label="挂号费用" prop="regFee" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="registered.regFee" placeholder="请输入挂号费用"></el-input>
+    <el-form :model="purchases" :rules="rules" ref="formRef" label-width="100px">
+      <el-table :data="purchaseDetailList" style="width: 100%;">
+        <el-table-column prop="medicinesId" label="药品ID" width="250" />
+        <el-table-column prop="medicinesName" label="药品名称" width="220" />
+        <el-table-column prop="size" label="数量" width="100" />
+      </el-table>
+      <el-form-item label="审核信息" prop="massage" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="purchases.massage" placeholder="请输入审核信息" type="textarea" rows="4" ></el-input>
       </el-form-item>
       <el-row style="display: flex; justify-content: center; align-items: center; ">
-        <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="editSubmitForm">修改</el-button>
-        <el-button type="info" style="width: 200px; margin-top: 20px; margin-left: 60px;" @click="handleClose">取消</el-button>
+        <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="editSubmitForm('通过')">通过</el-button>
+        <el-button type="warning" style="width: 200px; margin-top: 20px; margin-left: 60px;" @click="editSubmitForm('拒绝')">拒绝</el-button>
       </el-row>
     </el-form>
   </el-dialog>
@@ -125,37 +134,54 @@ import { Search } from '@element-plus/icons-vue';
 import { get, post, accessHeader } from '@/net';
 import router from '@/router';
 
-let registeredList = ref([]);
+let purchaseList = ref([]);
+let dictDataList = ref([])
+let purchaseDetailList = ref([])
+
 const addDialogVisible = ref(false)
 const editDialogVisible = ref(false)
 
 let selectedRowList = ref([])
 const count = ref(0)
 
+let massage = ref('')
+
 let searchValue = reactive({
-  regName: '',
+  status: '',
   currentPage: 1,
   pageSize: 10
 })
 
-interface Registered {
-  id: number | null,
-  regName: string,
-  regFee: number | null,
+interface Purchases {
+  id: number
+  tradeTotalAmount: number
+  applyUserId: number
+  applyUserName: string
+  storageOptUser: string
+  storageOptTime: string
+  auditMsg: string
   status: string
+  info: string
+  massage: string
 }
 
-let registered : Registered = reactive({
-  Id: null,
-  regName: '',
-  regFee: null,
-  status: ''
+let purchases : Purchases = reactive({
+  id: 0,
+  tradeTotalAmount: 0,
+  applyUserId: 0,
+  applyUserName: '',
+  storageOptUser: '',
+  storageOptTime: '',
+  auditMsg: '',
+  status: '',
+  info: '',
+  massage: ''
 })
 
 let fileName = ref("multipartFiles")
 let headers =ref(accessHeader())
 let fileList =ref([])
-let postUrl = ref("http://mugen.net/mugen/api/his/registereds/post/excel")
+let postUrl = ref("http://localhost:8000/mugen/api/customers/post/excel")
 
 const formRef = ref()
 // 页面初始化加载数据
@@ -165,9 +191,12 @@ onMounted(() => {
 
 // 初始化页面数据
 function initializePage() {
-  post(`/his/registereds/get`,searchValue , (data: any) => {
-    registeredList.value = data.registeredList
+  post(`/erp/purchases/get/examine`,searchValue , (data: any) => {
+    purchaseList.value = data.purchaseList
     count.value = Number(data.count)
+  })
+  get('/dict/dict-datas/get/list/medicine-ins-flow', (data: any) => {
+    dictDataList.value = data
   })
   handleClose()
 };
@@ -175,10 +204,16 @@ function initializePage() {
 function handleClose() {
   addDialogVisible.value = false
   editDialogVisible.value = false
-  registered.id = null
-  registered.regName = ''
-  registered.regFee = null
-  registered.status = ''
+  purchases.id = 0
+  purchases.tradeTotalAmount = 0
+  purchases.applyUserId = 0
+  purchases.applyUserName = ''
+  purchases.storageOptUser = ''
+  purchases.storageOptTime = ''
+  purchases.auditMsg = ''
+  purchases.status = ''
+  purchases.info = ''
+  massage.value = ''
 }
 
 const handleSearch = () => {
@@ -204,17 +239,25 @@ function nextAdd() {
 }
 
 function handleEdit(row) {
-  registered.id = row.id
-  registered.regName = row.regName
-  registered.regFee = row.regFee
-  registered.status = row.status
+  purchases.id = row.id
+  purchases.tradeTotalAmount = row.tradeTotalAmount
+  purchases.applyUserId = row.applyUserId
+  purchases.applyUserName = row.applyUserName
+  purchases.storageOptUser = row.storageOptUser
+  purchases.storageOptTime = row.storageOptTime
+  purchases.auditMsg = row.auditMsg
+  purchases.status = row.status
+  purchases.info = row.info
+  get(`/erp/purchase-details/get/purchase/${row.id}`, (data: any) => {
+    purchaseDetailList.value = data
+  })
   editDialogVisible.value = true
 }
 
 function addSubmitForm() {
   formRef.value.validate((valid) => {
     if (valid) {
-      post(`/his/registereds/post`, registered, () => {
+      post(`/erp/purchases/post`, purchases, () => {
         ElMessage.success('添加成功!')
         initializePage()
       })
@@ -226,28 +269,32 @@ function addSubmitForm() {
   });
 };
 
-function editSubmitForm() {
+function editSubmitForm(flag : number) {
   formRef.value.validate((valid) => {
     if(valid) {
-      post('/his/registereds/put', registered, () => {
-        ElMessage.success('修改成功!')
+      post(`/erp/purchases/put/examine`, {
+        purchaseId: purchases.id,
+        flag: flag,
+        massage: purchases.massage
+      }, () => {
+        ElMessage.success('审核成功!')
         initializePage()
       })
     } else {
-      ElMessage.warning('请完整填写注册表单内容!')
+      ElMessage.warning('请完整填写内容!')
     }
   });
 }
 
 function handleDelete(row) {
-  get(`/his/registereds/delete/${row.id}`, () => {
+  get(`/erp/purchases/delete/${row.id}`, () => {
     ElMessage.success('删除成功!')
     initializePage()
   })
 }
 
 function handleDeleteList() {
-  post(`/his/registereds/delete`, selectedRowList.value.map(row => row.id), () => {
+  post(`/erp/purchases/delete`, selectedRowList.value.map(row => row.id), () => {
     ElMessage.success('删除成功!')
     initializePage()
   })
@@ -256,7 +303,7 @@ function handleDeleteList() {
 function exportData() {
   const headers = accessHeader();
 
-  fetch(`http://mugen.net/mugen/api/his/registereds/get/excel`, {
+  fetch(`http://mugen.net/mugen/api/erp/purchases/get/excel`, {
     method: 'GET',
     headers: headers // 确保accessHeader()返回正确的headers对象
   })
@@ -296,17 +343,9 @@ function uploadSuccess(data) {
 }
 
 let rules = {
-  regName: [
-    { required: true, message: '请输入挂号项目名称', trigger: 'blur' },
+  massage: [
+    { required: true, message: '请输入审核信息', trigger: 'blur' },
     { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
-  ],
-  regFee: [
-    { required: true, message: '请输入挂号费用', trigger: 'blur' },
-    {
-      pattern: /^\d+(\.\d+)?$/,
-      message: '请输入正确的数字格式',
-      trigger: 'blur'
-    }
   ]
 };
 </script>

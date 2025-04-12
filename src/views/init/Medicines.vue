@@ -1,12 +1,20 @@
 <template>
   <div style="margin-bottom: 10px;">
     <el-row>
-      <el-input v-model="searchValue.medicinesName" style="width: 240px;" size="small" placeholder="请输入药品名称" type="text">
+      <el-input v-model="searchValue.medicinesName" style="width: 400px;" size="small" placeholder="请输入药品名称" type="text">
         <template #prepend>
           <el-button @click="handleSearch" :icon="Search" />
         </template>
+        <template #append>
+          <el-select v-model="searchValue.dangerStock" placeholder="库存预警" style="width: 140px;">
+            <el-option label="全部" value=""></el-option>
+            <el-option label="黄色预警" value="yellow"></el-option>
+            <el-option label="红色预警" value="red"></el-option>
+          </el-select>
+        </template>
       </el-input>
 <!--      <el-input v-model="searchValue.address" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入地址" type="text"></el-input>-->
+
       <el-button  @click="handleSearch" style="margin-left: 5px; width: 75px; height: 32px;" size="small" type="primary">搜索</el-button>
 
       <el-button type="primary" style="width: 80px; height: 32px;" size="small" @click="nextAdd">新增<el-icon><CirclePlus /></el-icon></el-button>
@@ -41,7 +49,7 @@
     </el-row>
   </div>
 
-  <el-table :data="medicineList" border @selection-change="handleSelectionChange" max-height=525>
+  <el-table :data="medicineList" border @selection-change="handleSelectionChange" :row-class-name="tableRowClassName" max-height=525>
     <el-table-column type="selection" width="55"/>
     <el-table-column label="药品名称" prop="medicinesName" width="200" sortable="custom"/>
     <el-table-column label="国药准字" prop="medicinesNumber" width="120" sortable="custom"/>
@@ -56,6 +64,7 @@
       </template>
     </el-table-column>
     <el-table-column label="处方价格" prop="prescriptionPrice" width="120" sortable="custom"/>
+    <el-table-column label="采购价格" prop="purchasePrice" width="120" sortable="custom"/>
     <el-table-column label="单位" prop="unit" width="120" sortable="custom"/>
     <el-table-column label="转换比例" prop="conversion" width="120" sortable="custom"/>
     <el-table-column prop="kerwords" label="关键字" width="200">
@@ -151,6 +160,9 @@
       <el-form-item label="处方价格" prop="prescriptionPrice" style="width: 300px;">
         <el-input v-model="medicine.prescriptionPrice" placeholder="请输入处方价格" />
       </el-form-item>
+      <el-form-item label="采购价格" prop="purchasePrice" style="width: 300px;">
+        <el-input v-model="medicine.purchasePrice" placeholder="请输入药品价格" />
+      </el-form-item>
       <el-form-item label="生产商" prop="producterId" style="width: 505px; margin-top: 20px;">
         <el-select v-model="medicine.producterId" placeholder="请选择生产商">
           <el-option v-for="item in producterList" :key="item.producterCode" :label="item.producterName" :value="item.producterCode"></el-option>
@@ -228,6 +240,9 @@
       <el-form-item label="处方价格" prop="prescriptionPrice" style="width: 300px;">
         <el-input v-model="medicine.prescriptionPrice" placeholder="请输入处方价格" />
       </el-form-item>
+      <el-form-item label="采购价格" prop="purchasePrice" style="width: 300px;">
+        <el-input v-model="medicine.purchasePrice" placeholder="请输入药品价格" />
+      </el-form-item>
       <el-form-item label="生产商" prop="producterId" style="width: 505px; margin-top: 20px;">
         <el-select v-model="medicine.producterId" placeholder="请选择生产商">
           <el-option v-for="item in producterList" :key="item.producterCode" :label="item.producterName" :value="item.producterCode"></el-option>
@@ -287,6 +302,7 @@ let searchValue = reactive({
   medicinesName: '',
   medicinesType: '',
   prescriptionType: '',
+  dangerStock: '',
   currentPage: 1,
   pageSize: 10
 })
@@ -298,6 +314,7 @@ interface Medicine {
   medicinesType: string,
   prescriptionType: string,
   prescriptionPrice: string,
+  purchasePrice: string,
   unit: string,
   conversion: number,
   keywords: string,
@@ -314,6 +331,7 @@ let medicine : Medicine = reactive({
   medicinesType: '',
   prescriptionType: '',
   prescriptionPrice: '',
+  purchasePrice: '',
   unit: '',
   conversion: null,
   keywords: '',
@@ -361,6 +379,7 @@ function handleClose() {
   medicine.medicinesType = ''
   medicine.prescriptionType = ''
   medicine.prescriptionPrice = ''
+  medicine.purchasePrice = ''
   medicine.unit = ''
   medicine.conversion = null
   medicine.keywords = ''
@@ -401,6 +420,7 @@ function handleEdit(row) {
   medicine.medicinesType = row.medicinesType
   medicine.prescriptionType = row.prescriptionType
   medicine.prescriptionPrice = row.prescriptionPrice
+  medicine.purchasePrice = row.purchasePrice
   medicine.unit = row.unit
   medicine.conversion = row.conversion
   medicine.keywords = row.keywords
@@ -499,13 +519,13 @@ function uploadSuccess(data) {
 }
 
 function addKeyword() {
-  if (keyword.value.trim() !== '') {
+  if (keyword.value.trim() === '') {
+    ElMessage.warning('请输入关键字!')
+  } else if (keywordList.value.includes(keyword.value.trim())) {
+    ElMessage.warning('关键字已存在!')
+  } else {
     keywordList.value.push(keyword.value.trim())
     keyword.value = ''
-  } else if (keyword.value.trim() === '') {
-    ElMessage.warning('请输入关键字!')
-  } else if (!keywordList.value.includes(keyword.value.trim())) {
-    ElMessage.warning('关键字已存在!')
   }
 }
 
@@ -513,6 +533,18 @@ function deleteKeyword(item, index) {
   keywordList.value.splice(index, 1)
 }
 
+const tableRowClassName = ({row, rowIndex}: {
+  row: Log,
+  rowIndex: number
+}) => {
+ if (row.stockNum < row.stockDengerNum) {
+   return 'error-row';
+ } else if (row.stockNum < row.stockDengerNum * 1.2) {
+   return 'warning-row';
+ } else {
+   return '';
+ }
+}
 
 let rules = {
   medicinesNumber: [
@@ -576,10 +608,31 @@ let rules = {
     // 如果需要限制长度，可以保留 min 和 max 规则
     // { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
   ],
+  prescriptionPrice: [
+    { required: true, message: '请输入处方价格', trigger: 'blur' },
+    {
+      pattern: /^\d+(\.\d+)?$/, message: '请输入正确的数字格式', trigger: 'blur'
+    }
+  ],
 };
 
 
 </script>
+<style>
+.el-table .warning-row {
+  --el-table-tr-bg-color: var(--el-color-warning-light-9);
+}
+.el-table .success-row {
+  --el-table-tr-bg-color: var(--el-color-success-light-9);
+}
+.el-table .error-row {
+  --el-table-tr-bg-color: var(--el-color-error-light-9);
+}
+.el-table .handler {
+  --el-table-tr-bg-color: var(--el-color-black);
+}
+</style>
+
 
 <style scoped>
 </style>

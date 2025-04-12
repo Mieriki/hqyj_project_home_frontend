@@ -259,7 +259,7 @@
       <el-form-item label="备注" prop="introduction" style="width: 505px; margin-top: 20px;">
         <el-input v-model="admin.introduction"></el-input>
       </el-form-item>
-      <el-row v-if="!admin.enabled" style="display: flex; justify-content: center; align-items: center; ">
+      <el-row v-if="enabled === false" style="display: flex; justify-content: center; align-items: center; ">
         <el-popconfirm
             confirm-button-text="确认"
             cancel-button-text="点错了"
@@ -332,6 +332,8 @@ let organizeList = ref([])
 let deptList = ref([])
 let roleList = ref([])
 const count = ref(0)
+
+let enabled = ref(true)
 
 let searchValue = reactive({
   deptId: '',
@@ -413,6 +415,7 @@ function handleClose() {
   admin.lastLoginDate = null
   admin.status = ''
   admin.schedulingFlag = null
+  enabled.value = true
 }
 
 const handleEnabled = (row) => {
@@ -500,6 +503,7 @@ function handleEdit(row) {
   admin.lastLoginDate = row.lastLoginDate
   admin.status = row.status
   admin.schedulingFlag = row.schedulingFlag
+  enabled.value = row.enabled
   editDialogVisible.value = true
 }
 
