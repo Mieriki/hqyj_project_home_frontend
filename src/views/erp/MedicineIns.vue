@@ -102,6 +102,9 @@
         <el-table-column prop="medicinesName" label="药品名称" width="220" />
         <el-table-column prop="size" label="数量" width="100" />
       </el-table>
+      <el-form-item label="审核信息" prop="info" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="purchase.info" placeholder="请输入审核信息" type="textarea" rows="4" ></el-input>
+      </el-form-item>
       <el-row style="display: flex; justify-content: center; align-items: center; margin-bottom: 25px;">
         <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="addSubmitForm">新增</el-button>
         <el-button type="info" style="width: 200px; margin-top: 20px; margin-left: 65px;" @click="handleClose">取消</el-button>
@@ -366,7 +369,9 @@ const tableRowClassName = ({row, rowIndex}: {
 }
 
 const rules = {
-
+  info: [
+      { required: true, message: '请输入审核信息', trigger: 'blur' }
+  ],
 }
 </script>
 <style>

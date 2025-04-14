@@ -101,9 +101,9 @@
             <el-avatar :src="scope.row.picture" :size="30"></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column prop="account" label="用户名" width="100">
+        <el-table-column prop="account" label="用户名" width="120">
         </el-table-column>
-        <el-table-column prop="username" label="姓名" width="100">
+        <el-table-column prop="username" label="姓名" width="150">
         </el-table-column>
         <el-table-column prop="genderStr" label="性别" width="60">
         </el-table-column>
@@ -619,7 +619,7 @@ const rules = {
     {max: 20, message: '用户名长度不能超过20个字符', trigger: 'blur'}
   ],
   password: [
-    {required: true, message: '请输入密码', trigger: 'blur'},
+    {required: false, message: '请输入密码', trigger: 'blur'},
     {min: 6, max: 50, message: '密码长度必须在6到50个字符之间', trigger: 'blur'},
     {
       pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z_@.]{6,50}$/,

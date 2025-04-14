@@ -1,12 +1,17 @@
 <template>
   <div style="margin-bottom: 10px;">
     <el-row>
-      <el-input v-model="searchValue.applyUserName" style="width: 240px;" size="small" placeholder="请输入申请人姓名" type="text">
-        <template #prepend>
-          <el-button @click="handleSearch" :icon="Search" />
-        </template>
-      </el-input>
+<!--      <el-input v-model="searchValue.applyUserName" style="width: 240px;" size="small" placeholder="请输入申请人姓名" type="text">-->
+<!--        <template #prepend>-->
+<!--          <el-button @click="handleSearch" :icon="Search" />-->
+<!--        </template>-->
+<!--      </el-input>-->
 <!--      <el-input v-model="searchValue.address" style="width: 200px; margin-left: 5px;" size="small" placeholder="请输入地址" type="text"></el-input>-->
+      <el-select v-model="searchValue.status" placeholder="请选择状态" style="width: 240px; height: 40px;">
+        <el-option label="全部" value=""></el-option>
+        <el-option label="待审核" value="sinsatu"></el-option>
+        <el-option label="已审核" value="owari"></el-option>
+      </el-select>
       <el-button  @click="handleSearch" style="margin-left: 5px; width: 75px; height: 32px;" size="small" type="primary">搜索</el-button>
 
 <!--      <el-button type="primary" style="width: 80px; height: 32px;" size="small" @click="nextAdd">新增<el-icon><CirclePlus /></el-icon></el-button>-->
@@ -26,22 +31,22 @@
 <!--        </template>-->
 <!--      </el-popconfirm>-->
 
-<!--      <el-upload-->
-<!--          list-type="text"-->
-<!--          accept=".xls, .xlsx"-->
-<!--          :file-list="fileList"-->
-<!--          :headers="headers"-->
-<!--          :action="postUrl"-->
-<!--          :multiple="false"-->
-<!--          :show-file-list="false"-->
-<!--          :on-success="uploadSuccess">-->
-<!--        <el-button type="primary" style="margin-left: 5px; width: 80px; height: 32px;" size="small">导入<el-icon><Download /></el-icon></el-button>-->
-<!--      </el-upload>-->
+      <!--      <el-upload-->
+      <!--          list-type="text"-->
+      <!--          accept=".xls, .xlsx"-->
+      <!--          :file-list="fileList"-->
+      <!--          :headers="headers"-->
+      <!--          :action="postUrl"-->
+      <!--          :multiple="false"-->
+      <!--          :show-file-list="false"-->
+      <!--          :on-success="uploadSuccess">-->
+      <!--        <el-button type="primary" style="margin-left: 5px; width: 80px; height: 32px;" size="small">导入<el-icon><Download /></el-icon></el-button>-->
+      <!--      </el-upload>-->
 <!--      <el-button type="primary" style="margin-left: 5px; width: 80px; height: 32px;" size="small" @click="exportData">导出<el-icon><Upload /></el-icon></el-button>-->
     </el-row>
   </div>
 
-  <el-table :data="purchaseList" border @selection-change="handleSelectionChange" max-height=525>
+  <el-table :data="purchaseList" border :row-class-name="tableRowClassName" @selection-change="handleSelectionChange" max-height=525>
     <el-table-column type="selection" width="55"/>
     <el-table-column prop="applyUserName" label="申请人姓名" width="200"></el-table-column>
     <el-table-column prop="tradeTotalAmount" label="交易总金额" width="120"></el-table-column>
@@ -52,25 +57,29 @@
       </template>
     </el-table-column>
 <!--    <el-table-column prop="info" label="信息" width="300"></el-table-column>-->
-    <el-table-column prop="storageOptUser" label="入库操作人" width="200"></el-table-column>
-<!--    <el-table-column prop="storageOptTime" label="入库时间" width="200"></el-table-column>-->
+    <el-table-column prop="storageOptUser" label="入操作库人" width="200"></el-table-column>
+    <el-table-column prop="storageOptTime" label="入库时间" width="200">
+      <template #default="scope">
+        {{scope.row.storageOptTime ? new Date(scope.row.storageOptTime).toLocaleString() : ''}}
+      </template>
+    </el-table-column>
     <el-table-column label="操作" fixed="right">
       <template #default="scope">
-<!--        <el-button size="small" type="warning" @click="handleEdit(scope.row)">编辑</el-button>-->
-<!--        <el-popconfirm-->
-<!--            confirm-button-text="删除"-->
-<!--            cancel-button-text="点错了"-->
-<!--            :icon="InfoFilled"-->
-<!--            confirm-button-type="danger"-->
-<!--            icon-color="#ef0004"-->
-<!--            title="确认要删除此客户?"-->
-<!--            :width="200"-->
-<!--            @confirm="handleDelete(scope.row)"-->
-<!--        >-->
-<!--          <template #reference>-->
-<!--            <el-button type="danger" size="small">删除</el-button>-->
-<!--          </template>-->
-<!--        </el-popconfirm>-->
+        <!--        <el-button size="small" type="warning" @click="handleEdit(scope.row)">编辑</el-button>-->
+        <!--        <el-popconfirm-->
+        <!--            confirm-button-text="删除"-->
+        <!--            cancel-button-text="点错了"-->
+        <!--            :icon="InfoFilled"-->
+        <!--            confirm-button-type="danger"-->
+        <!--            icon-color="#ef0004"-->
+        <!--            title="确认要删除此客户?"-->
+        <!--            :width="200"-->
+        <!--            @confirm="handleDelete(scope.row)"-->
+        <!--        >-->
+        <!--          <template #reference>-->
+        <!--            <el-button type="danger" size="small">删除</el-button>-->
+        <!--          </template>-->
+        <!--        </el-popconfirm>-->
 
         <el-button size="small" type="primary" plain @click="handleEdit(scope.row)">
           <el-icon>
@@ -120,34 +129,35 @@
         <el-table-column prop="size" label="数量" width="100" />
       </el-table>
       <ExamineList
-          :examineRecords="infoList"
-          dateFormat="DD/MM/YYYY HH:mm:ss"
-          cardClass="custom-card"
-          timelineItemSize="large"
-          cardShadow="hover"
-          time-field="examineDate"
-          finishStatus="finish"
-          :fields="{
+        :examineRecords="infoList"
+        dateFormat="DD/MM/YYYY HH:mm:ss"
+        cardClass="custom-card"
+        timelineItemSize="large"
+        cardShadow="hover"
+        time-field="examineDate"
+        finishStatus="finish"
+        :fields="{
           examineUser: { label: '操作人'},
           examineFlag: { label: '状态'},
           examineMsg: { label: '消息'}
         }"
-          :steps="[
+        :steps="[
           { title: '组长审核'},
           { title: '财务审核'},
           { title: '归档'}
         ]"
-          :currentStep="1"
-          :simple="true"
-          style="margin-top: 20px;"
+        :currentStep=akusyon
+        :simple="true"
+        style="margin-top: 20px;"
       ></ExamineList>
-      <el-form-item label="审核信息" prop="massage" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="purchases.massage" placeholder="请输入审核信息" type="textarea" rows="4" ></el-input>
-      </el-form-item>
-      <el-row style="display: flex; justify-content: center; align-items: center; ">
-        <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="editSubmitForm('通过')">通过</el-button>
-        <el-button type="warning" style="width: 200px; margin-top: 20px; margin-left: 60px;" @click="editSubmitForm('拒绝')">拒绝</el-button>
-      </el-row>
+<!--      <el-form-item label="审核信息" prop="massage" style="width: 505px; margin-top: 20px;">-->
+<!--        <el-input v-model="purchases.massage" placeholder="请输入审核信息" type="textarea" rows="4" ></el-input>-->
+<!--      </el-form-item>-->
+
+<!--      <el-row style="display: flex; justify-content: center; align-items: center; ">-->
+<!--        <el-button type="primary" style="width: 200px; margin-top: 20px;" @click="editSubmitForm('通过')">通过</el-button>-->
+<!--        <el-button type="warning" style="width: 200px; margin-top: 20px; margin-left: 60px;" @click="editSubmitForm('拒绝')">拒绝</el-button>-->
+<!--      </el-row>-->
     </el-form>
   </el-dialog>
 </template>
@@ -162,14 +172,14 @@ let purchaseList = ref([]);
 let dictDataList = ref([])
 let purchaseDetailList = ref([])
 
+let infoList = ref([])
+let akusyon = ref(1)
+
 const addDialogVisible = ref(false)
 const editDialogVisible = ref(false)
 
 let selectedRowList = ref([])
 const count = ref(0)
-let infoList = ref([])
-let akusyon = ref(1)
-
 
 let massage = ref('')
 
@@ -219,7 +229,7 @@ onMounted(() => {
 
 // 初始化页面数据
 function initializePage() {
-  post(`/erp/purchases/get/examine`,searchValue , (data: any) => {
+  post(`/erp/purchases/get/result`,searchValue , (data: any) => {
     purchaseList.value = data.purchaseList
     count.value = Number(data.count)
   })
@@ -241,7 +251,6 @@ function handleClose() {
   purchases.auditMsg = ''
   purchases.status = ''
   purchases.info = ''
-  purchases.massage = ''
   massage.value = ''
 }
 
@@ -380,6 +389,36 @@ function uploadSuccess(data) {
   )
 }
 
+function formatISODate(isoDateString: string | number | Date) {
+  const date = new Date(isoDateString);
+
+  // 获取年份的后两位
+  const year = date.getFullYear().toString();
+
+  // 获取月份和日期，确保两位数
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  // 获取小时、分钟和秒，确保两位数
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+const tableRowClassName = ({row, rowIndex}: {
+  row: Log,
+  rowIndex: number
+}) => {
+  if (row.status === 'owari') {
+    return 'success-row'
+  } else if (row.status === 'owari-f') {
+    return 'error-row'
+  }
+  return ''
+}
+
 let rules = {
   massage: [
     { required: true, message: '请输入审核信息', trigger: 'blur' },
@@ -389,4 +428,19 @@ let rules = {
 </script>
 
 <style scoped>
+</style>
+
+<style>
+.el-table .warning-row {
+  --el-table-tr-bg-color: var(--el-color-warning-light-9);
+}
+.el-table .success-row {
+  --el-table-tr-bg-color: var(--el-color-success-light-9);
+}
+.el-table .error-row {
+  --el-table-tr-bg-color: var(--el-color-error-light-9);
+}
+.el-table .handler {
+  --el-table-tr-bg-color: var(--el-color-black);
+}
 </style>
