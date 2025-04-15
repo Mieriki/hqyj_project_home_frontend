@@ -50,11 +50,11 @@
 		</el-table-column>
 		<el-table-column prop="id" label="用户编号" width="85">
 		</el-table-column>
-		<el-table-column prop="name" label="姓名" width="100">
+		<el-table-column prop="name" label="姓名" width="150">
 		</el-table-column>
-		<el-table-column prop="userName" label="用户名" width="100">
+		<el-table-column prop="userName" label="用户名" width="150">
 		</el-table-column>
-		<el-table-column prop="telephone" label="住宅电话" width="120">
+		<el-table-column prop="email" label="邮箱" width="200">
 		</el-table-column>
 		<el-table-column prop="phone" label="电话" width="140">
 		</el-table-column>
@@ -62,7 +62,7 @@
 		</el-table-column>
 		<el-table-column prop="remark" label="备注" width="160">
 		</el-table-column>
-		<el-table-column label="操作" fixed="right">
+		<el-table-column label="操作" fixed="right" width="220">
 			<template #default="scope">
 				<el-button size="small" type="primary" @click="handleRole(scope.row)"><el-icon><Avatar /></el-icon>角色</el-button>
 				<el-button size="small" type="warning" @click="handleEdit(scope.row)">编辑</el-button>
@@ -131,12 +131,16 @@
 					</el-form-item>
 				</el-col>
 			</el-row>
-			<el-form-item label="住宅电话" prop="telephone" style="width: 400px;">
-				<el-input v-model="admin.telephone"></el-input>
-			</el-form-item>
-			<el-form-item label="电话" prop="phone" style="width: 400px; margin-top: 20px;">
+<!--			<el-form-item label="住宅电话" prop="telephone" style="width: 400px;">-->
+<!--				<el-input v-model="admin.telephone"></el-input>-->
+<!--			</el-form-item>-->
+
+			<el-form-item label="电话" prop="phone" style="width: 400px; ">
 				<el-input v-model="admin.phone"></el-input>
 			</el-form-item>
+      <el-form-item label="邮箱" prop="email" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="admin.email"></el-input>
+      </el-form-item>
 			<el-form-item label="联系地址" prop="address" style="width: 505px; margin-top: 20px;">
 				<el-input v-model="admin.address"></el-input>
 			</el-form-item>
@@ -168,12 +172,15 @@
 					</el-form-item>
 				</el-col>
 			</el-row>
-			<el-form-item label="住宅电话" prop="telephone" style="width: 400px;">
-				<el-input v-model="admin.telephone"></el-input>
-			</el-form-item>
-			<el-form-item label="电话" prop="phone" style="width: 400px; margin-top: 20px;">
+<!--			<el-form-item label="住宅电话" prop="telephone" style="width: 400px;">-->
+<!--				<el-input v-model="admin.telephone"></el-input>-->
+<!--			</el-form-item>-->
+			<el-form-item label="电话" prop="phone" style="width: 400px; ">
 				<el-input v-model="admin.phone"></el-input>
 			</el-form-item>
+      <el-form-item label="邮箱" prop="email" style="width: 505px; margin-top: 20px;">
+        <el-input v-model="admin.email"></el-input>
+      </el-form-item>
 			<el-form-item label="联系地址" prop="address" style="width: 505px; margin-top: 20px;">
 				<el-input v-model="admin.address"></el-input>
 			</el-form-item>
@@ -285,7 +292,7 @@
 		admin.id = null
 		admin.name = ''
 		admin.phone = ''
-		admin.telephone = ''
+		admin.email = ''
 		admin.address = ''
 		admin.enabled = null
 		admin.userName = ''
@@ -352,7 +359,7 @@
 		admin.id = row.id
 		admin.name = row.name
 		admin.phone = row.phone
-		admin.telephone = row.telephone
+		admin.email = row.email
 		admin.address = row.address
 		admin.enabled = row.enabled
 		admin.userName = row.userName
@@ -426,13 +433,17 @@
 			{ required: true, message: '请输入用户名', trigger: 'blur' },
 			{ max: 20, message: '用户名长度不能超过20个字符', trigger: 'blur' }
 	    ],
-	    telephone: [
-	        { pattern: /^\d+$/, message: '请输入正确的住宅电话，只能包含数字', trigger: 'blur' }
-	    ],
+	    // telephone: [
+	    //     { pattern: /^\d+$/, message: '请输入正确的住宅电话，只能包含数字', trigger: 'blur' }
+	    // ],
 	    phone: [
 	        { required: true, message: '请输入电话号码', trigger: 'blur' },
 	        { pattern: /^(13|18|19)\d{9}$/, message: '请输入正确的11位手机号码', trigger: 'blur' }
 	    ],
+      email: [
+        { required: true, message: '请输入邮箱', trigger: 'blur' },
+        { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
+      ],
 	    address: [
 			{ required: true, message: '请输入请输入地址', trigger: 'blur' },
 			{ max: 100, message: '地址长度不能超过100个字符', trigger: 'blur' }

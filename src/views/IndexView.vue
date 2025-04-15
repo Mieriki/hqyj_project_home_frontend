@@ -16,7 +16,7 @@
 					<div style="display: flex; align-items: center; justify-content: center; height: 60px;">
 						<el-image src="https://t.tutu.to/img/UdQtn" alt=""
 							style="width: 20px; position: relative; top: 1px; margin-right: 5px;"></el-image>
-						<b style="color: #FFF;" v-show="logoTextShow">办公自动化系统 </b>
+						<b style="color: #FFF;" v-show="logoTextShow">行测答题系统 </b>
 					</div>
 					<el-menu-item index="/">
 						<el-icon v-show="!logoTextShow" class="iconColor">
@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, onMounted, Menu, watch } from 'vue'
+	import { ref, onMounted, watch } from 'vue'
 	import router from '../router';
 	import { HomeFilled, Tools, Files, Van, Wallet, Histogram, Box, Setting, DataAnalysis } from '@element-plus/icons-vue'
 	import { useMeanStore } from '../store';

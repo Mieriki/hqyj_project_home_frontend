@@ -13,7 +13,7 @@ const router = createRouter({
 				{
 					path: '/',
 					name: '首页',
-					component: () => import('@/views/tb/EchartsView.vue')
+					component: () => import('@/views/index_view/HomeView.vue')
 				},
 				{
 					path: '/main/user-info',

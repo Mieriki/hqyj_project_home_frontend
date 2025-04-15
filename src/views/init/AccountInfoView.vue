@@ -7,12 +7,18 @@
 						<el-input v-model="admin.name"></el-input>
 					</el-form-item>
 				</el-row>
-				<el-form-item label="座机" prop="telephone" style="width: 500px;">
-					<el-input v-model="admin.telephone"></el-input>
-				</el-form-item>
+        <el-form-item label="用户名" prop="userName" style="width: 500px;">
+          <el-input v-model="admin.userName" disabled></el-input>
+        </el-form-item>
+<!--				<el-form-item label="座机" prop="telephone" style="width: 500px;">-->
+<!--					<el-input v-model="admin.telephone"></el-input>-->
+<!--				</el-form-item>-->
 				<el-form-item label="电话" prop="phone" style="width: 500px;">
 					<el-input v-model="admin.phone"></el-input>
 				</el-form-item>
+        <el-form-item label="邮箱" prop="email" style="width: 500px;">
+          <el-input v-model="admin.email" disabled></el-input>
+        </el-form-item>
 				<el-form-item label="地址" prop="address" style="width: 500px;">
 					<el-input v-model="admin.address"></el-input>
 				</el-form-item>
@@ -23,7 +29,7 @@
 			
 		</el-col>
 		<el-col :span="9">
-			<el-card style="max-width: 480px; padding: 0, 100px;">
+			<el-card style="max-width: 480px; padding: 0;">
 				<template #header>
 					<div style="text-align: -webkit-center">
 						<el-upload
@@ -48,7 +54,7 @@
 					<el-descriptions-item label="用户名">
 						<el-tag size="small"> {{ admin.userName }} </el-tag>
 					</el-descriptions-item>
-					<el-descriptions-item label="座机"> {{ admin.telephone }} </el-descriptions-item>
+					<el-descriptions-item label="邮箱"> {{ admin.email }} </el-descriptions-item>
 					<el-descriptions-item label="电话"> {{ admin.phone }} </el-descriptions-item>
 					<el-descriptions-item label="地址"> {{ admin.address }} </el-descriptions-item>
 				</el-descriptions>
@@ -108,7 +114,7 @@
 			admin.id = data.id
 			admin.name = data.name
 			admin.phone = data.phone
-			admin.telephone = data.telephone
+			admin.email = data.email
 			admin.address = data.address
 			admin.enabled = data.enabled
 			admin.userName = data.userName
@@ -160,11 +166,11 @@
 	          { required: true, message: '请输入姓名', trigger: 'blur' },
 	          { min: 0, max: 5, message: '长度在 0 到 5 个字符', trigger: 'blur' }
 	        ],
-	        telephone: [
-	          { required: true, message: '请输入座机号码', trigger: 'blur' },
-	          // { pattern: /^(\d{3,4}-)?\d{7,8}$/, message: '请输入正确的座机号码', trigger: 'blur' }
-			   { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的座机号码', trigger: 'blur' }
-	        ],
+	       //  telephone: [
+	       //    { required: true, message: '请输入座机号码', trigger: 'blur' },
+	       //    // { pattern: /^(\d{3,4}-)?\d{7,8}$/, message: '请输入正确的座机号码', trigger: 'blur' }
+			   // { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的座机号码', trigger: 'blur' }
+	       //  ],
 	        phone: [
 	          { required: true, message: '请输入电话号码', trigger: 'blur' },
 	          { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
