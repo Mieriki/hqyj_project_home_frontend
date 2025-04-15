@@ -104,7 +104,29 @@
         <el-input v-model="mondai.informations" placeholder="请输入资料"></el-input>
       </el-form-item>
       <el-form-item label="图片" prop="pictures" style="width: 505px; margin-top: 20px;">
-        <el-input v-model="mondai.pictures" placeholder="请输入图片"></el-input>
+        <div class="image-upload-wrapper">
+          <el-image
+              v-if="mondai.pictures"
+              :src="mondai.pictures"
+              class="preview-image"
+              fit="cover"
+          />
+          <el-upload
+              ref="imageRef"
+              :accept="'image/*'"
+              list-type="picture-card"
+              :headers="headers"
+              :action="imagePostUrl"
+              :multiple="false"
+              :show-file-list="false"
+              :on-exceed="handleExceed"
+              :limit="1"
+              :on-success="imageUploadSuccess"
+              class="image-uploader"
+          >
+            <el-icon class="upload-icon"><Plus /></el-icon>
+          </el-upload>
+        </div>
       </el-form-item>
       <el-form-item label="备注" prop="note" style="width: 505px; margin-top: 20px;">
         <el-input v-model="mondai.note" placeholder="请输入备注"></el-input>
@@ -201,6 +223,7 @@ let fileName = ref("multipartFiles")
 let headers =ref(accessHeader())
 let fileList =ref([])
 let postUrl = ref("http://localhost:8000/mugen/api/mondais/post/excel")
+let imagePostUrl = ref("http://localhost:8000/mugen/api/mondais/post/image")
 
 const formRef = ref()
 // 页面初始化加载数据
@@ -317,10 +340,47 @@ function uploadSuccess(data) {
   )
 }
 
+function imageUploadSuccess(data) {
+  if (data.code === 200) {
+    dictData.dictValue = data.data
+    imageList.value = []
+    imageRef.value.clearFiles()
+    ElMessage.success("上传成功!")
+  } else (
+      ElMessage.warning(data.message)
+  )
+}
+
 let rules = {
 
 };
 </script>
 
 <style scoped>
+.image-upload-wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.image-uploader :deep(.el-upload) {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed var(--el-border-color);
+  border-radius: var(--el-border-radius-base);
+  transition: border-color 0.3s;
+}
+
+.image-uploader :deep(.el-upload:hover) {
+  border-color: var(--el-color-primary);
+}
+
+.upload-icon {
+  font-size: 24px;
+  color: var(--el-text-color-secondary);
+}
+
+.bool-switch {
+  margin: 10px 0;
+}
 </style>
