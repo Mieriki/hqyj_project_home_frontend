@@ -99,7 +99,7 @@
 <script setup lang="ts">
 	import { ref, onMounted, watch } from 'vue'
 	import router from '../router';
-	import { HomeFilled, Tools, Files, Van, Wallet, Histogram, Box, Setting, DataAnalysis } from '@element-plus/icons-vue'
+	import { HomeFilled, Tools, Files, Van, Wallet, Histogram, Box, Setting, DataAnalysis, EditPen } from '@element-plus/icons-vue'
 	import { useMeanStore } from '../store';
 	import { getUserInfo, logout, get } from '../net';
 

@@ -1,83 +1,86 @@
 <template>
   <el-card class="question-card">
-    <div class="question-title">{{ question.title }}</div>
-    <el-image
-        v-if="question.pictures"
-        :src="question.pictures"
-        class="question-image"
-        fit="cover"
-    />
-    <div class="question-content" v-html="question.informations"></div>
+    <el-scrollbar :max-height="maxHeight">
+      <div class="question-title">{{ question.title }}</div>
+      <el-image
+          v-if="question.pictures"
+          :src="question.pictures"
+          class="question-image"
+          fit="cover"
+      />
+      <div class="question-content" v-html="question.informations"></div>
 
-    <!-- 选项区域 -->
-    <div class="options">
-      <el-radio-group
-          v-if="isSingleChoice"
-          v-model="selectedOption"
-          :disabled="shouldDisableInteraction"
-      >
-        <el-radio
-            v-for="(item, index) in parsedOptions"
-            :key="index"
-            :label="item.label"
-            class="option-item"
+      <!-- 选项区域 -->
+      <div class="options">
+        <el-radio-group
+            v-if="isSingleChoice"
+            v-model="selectedOption"
+            :disabled="shouldDisableInteraction"
         >
-          <p class="option-label">{{ item.value }}</p>
-        </el-radio>
-      </el-radio-group>
+          <el-radio
+              v-for="(item, index) in parsedOptions"
+              :key="index"
+              :label="item.label"
+              class="option-item"
+          >
+            <p class="option-label">{{ item.value }}</p>
+          </el-radio>
+        </el-radio-group>
 
-      <el-checkbox-group
-          v-else
-          v-model="selectedOptions"
-          :disabled="shouldDisableInteraction"
-      >
-        <el-checkbox
-            v-for="(item, index) in parsedOptions"
-            :key="index"
-            :label="item.label"
-            class="option-item"
+        <el-checkbox-group
+            v-else
+            v-model="selectedOptions"
+            :disabled="shouldDisableInteraction"
         >
-          <span class="option-label">{{ item.value }}</span>
-        </el-checkbox>
-      </el-checkbox-group>
-    </div>
+          <el-checkbox
+              v-for="(item, index) in parsedOptions"
+              :key="index"
+              :label="item.label"
+              class="option-item"
+          >
+            <span class="option-label">{{ item.value }}</span>
+          </el-checkbox>
+        </el-checkbox-group>
+      </div>
 
-    <!-- 答案解析 -->
-    <div v-if="showAnswer || admin" class="answer-explanation">
-      <div v-if="!admin" class="result-indicator" :class="isCorrect ? 'correct' : 'wrong'">
-        <div class="indicator-content">
-          <el-icon class="icon">
-            <SuccessFilled v-if="isCorrect" />
-            <WarningFilled v-else />
-          </el-icon>
-          <span class="text">
+      <!-- 答案解析 -->
+      <div v-if="showAnswer || admin" class="answer-explanation">
+        <div v-if="!admin" class="result-indicator" :class="isCorrect ? 'correct' : 'wrong'">
+          <div class="indicator-content">
+            <el-icon class="icon">
+              <SuccessFilled v-if="isCorrect"/>
+              <WarningFilled v-else/>
+            </el-icon>
+            <span class="text">
             {{ isCorrect ? '回答正确！' : '回答错误！' }}
           </span>
+          </div>
+        </div>
+
+        <div class="user-answer" v-if="!admin">
+          <span class="explanation-title">📝 你的答案：</span>
+          <span :class="answerClass">{{ formattedUserAnswer }}</span>
+        </div>
+
+        <div class="correct-answer">
+          <span class="explanation-title">✅ 正确答案：</span>
+          <span class="answer-value">{{ correctAnswerLabels }}</span>
+        </div>
+
+        <div class="explanation-detail">
+          <span class="explanation-title">📖 题目解析：</span>
+          <span class="explanation-text">{{ question.note }}</span>
         </div>
       </div>
-
-      <div class="user-answer" v-if="!admin">
-        <span class="explanation-title">📝 你的答案：</span>
-        <span :class="answerClass">{{ formattedUserAnswer }}</span>
-      </div>
-
-      <div class="correct-answer">
-        <span class="explanation-title">✅ 正确答案：</span>
-        <span class="answer-value">{{ correctAnswerLabels }}</span>
-      </div>
-
-      <div class="explanation-detail">
-        <span class="explanation-title">📖 题目解析：</span>
-        <span class="explanation-text">{{ question.note }}</span>
-      </div>
-    </div>
+    </el-scrollbar>
   </el-card>
+
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import type { PropType } from 'vue';
-import { SuccessFilled, WarningFilled } from '@element-plus/icons-vue';
+import {computed, ref, watch} from 'vue';
+import type {PropType} from 'vue';
+import {SuccessFilled, WarningFilled} from '@element-plus/icons-vue';
 
 interface QuestionOption {
   label: string;
@@ -111,6 +114,10 @@ const props = defineProps({
   showAnswer: {
     type: Boolean,
     default: false
+  },
+  maxHeight: {
+    type: String,
+    default: '100%'
   }
 });
 
@@ -204,7 +211,7 @@ watch(() => [props.modelValue, props.admin], ([value, isKanri]) => {
       selectedOptions.value = Array.isArray(value) ? value : [value];
     }
   }
-}, { immediate: true });
+}, {immediate: true});
 
 // 监听内部变化
 watch(

@@ -311,9 +311,7 @@
     <MondaiCard
         :question="question"
         @change="handleSelection"
-        v-model="answer"
-        :show-answer="showAnswers"
-        :admin="true"
+        admin
     ></MondaiCard>
   </el-dialog>
 
@@ -331,7 +329,7 @@ const addDialogVisible = ref(false)
 const editDialogVisible = ref(false)
 const detailDialogVisible = ref(false)
 
-const answer = ref('B')
+const answer = ref()
 
 const showAnswers = ref(true);
 
@@ -402,7 +400,7 @@ let fileName = ref("multipartFiles")
 let headers = ref(accessHeader())
 let fileList = ref([])
 let postUrl = ref("http://localhost:8000/mugen/api/mondais/post/excel")
-let imagePostUrl = ref("http://localhost:8000/mugen/api/mondais/post/image")
+let imagePostUrl = ref("http://192.168.189.209:8000/mugen/api/mondais/post/image")
 
 const formRef = ref()
 // 页面初始化加载数据
@@ -486,6 +484,8 @@ function addSubmitForm() {
     itemList.value.forEach((item, index) => {
       if (item.label === label.value) {
         item.single = true
+      } else {
+        item.single = false
       }
     })
     // console.log('itemList:', JSON.stringify(itemList.value))
@@ -512,6 +512,8 @@ function editSubmitForm() {
     itemList.value.forEach((item, index) => {
       if (item.label === label.value) {
         item.single = true
+      } else {
+        item.single = false
       }
     })
     // console.log('itemList:', JSON.stringify(itemList.value))
