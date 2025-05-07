@@ -2,7 +2,7 @@
 	<div class="soto">
 		<div class="sotu-back">
 			<el-image style="width: 100%; height: 100%; border-radius: 20px 0 0 20px;" fit="cover"  
-				src="https://t.tutu.to/img/mo8Nw"></el-image>
+				src="https://tse4-mm.cn.bing.net/th/id/OIP-C.bB8A0pBCn1Snvd8GYRWCwwHaFj?w=233&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7"></el-image>
 		</div>
 		<div class="right-card">
 			<router-view v-slot="{ Component }">

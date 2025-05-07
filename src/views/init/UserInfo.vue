@@ -91,7 +91,7 @@
 	let fileName = ref("multipartFiles")
 	let headers =ref(accessHeader())
 	let fileList =ref([])
-    let postUrl = ref(`http://mugen.net/mugen/api/sso/users/put/avater`)
+  let postUrl = ref(`http://mugen.net/mugen/api/sso/users/put/avater`)
 
   let admin = reactive({
     id: null,

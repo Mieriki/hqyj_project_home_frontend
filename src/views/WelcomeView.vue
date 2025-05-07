@@ -77,19 +77,19 @@ const widget = new SakanaWidget({
 		background-color: #000000;
 		position: absolute;
 		/* global 94%+ browsers support */
-		background: linear-gradient(90deg,#FFD6FF 0%,#01D1FF 100%); 
+		background: linear-gradient(90deg, #005ae6 0%, #2dc4ff 100%);
 		
 		/* safari 5.1+,chrome 10+ */
-		background: -webkit-linear-gradient(90deg,#FFD6FF 0%,#01D1FF 100%);
+		background: -webkit-linear-gradient(90deg,#005ae6 0%,#2dc4ff 100%);
 		
 		/* ff 3.6+ */
-		background: -moz-linear-gradient(90deg,#FFD6FF 0%,#01D1FF 100%);
+		background: -moz-linear-gradient(90deg,#005ae6 0%,#2dc4ff 100%);
 		
 		/* opera 11.10+ */ 
-		background: -o-linear-gradient(90deg,#FFD6FF 0%,#01D1FF 100%);
+		background: -o-linear-gradient(90deg,#005ae6 0%,#2dc4ff 100%);
 		
 		/* ie 10+ */
-		background: -ms-linear-gradient(90deg,#FFD6FF 0%,#01D1FF 100%);
+		background: -ms-linear-gradient(90deg,#005ae6 0%,#2dc4ff 100%);
 	}
 	
 	.right-card {
