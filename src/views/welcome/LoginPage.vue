@@ -27,7 +27,8 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12" style="text-align: right;">
-						<el-link  @click=" ElMessage.warning('请联系管理员重置密码！')">忘记密码？</el-link>
+            <el-link type="text" style="color: #409EFF;" @click="gotoRegisterPage">注册</el-link>
+						<el-link  @click=" ElMessage.warning('请联系管理员重置密码！')" style="margin-left: 10px;">忘记密码？</el-link>
 					</el-col>
 				</el-row>
 			</el-form>
@@ -75,6 +76,10 @@
 			}
 		});
 	}
+
+  function gotoRegisterPage() {
+    router.push({name: 'welcome-register'});
+  }
 </script>
 
 <style scoped>

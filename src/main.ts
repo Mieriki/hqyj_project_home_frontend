@@ -14,7 +14,7 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 
 import Mondai from "./components/MondaiCard.vue";
 
-axios.defaults.baseURL = 'http://192.168.189.209:8000/mugen/api'
+axios.defaults.baseURL = 'http://127.0.0.1:8000/mugen/api'
 
 const app = createApp(App)
 const pinia = createPinia()

@@ -172,11 +172,9 @@
 			   // { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的座机号码', trigger: 'blur' }
 	       //  ],
 	        phone: [
-	          { required: true, message: '请输入电话号码', trigger: 'blur' },
 	          { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
 	        ],
 	        address: [
-	          { required: true, message: '请输入地址', trigger: 'blur' },
 	          { min: 0, max: 100, message: '长度在 0 到 100 个字符', trigger: 'blur' }
 	        ]
 	}
