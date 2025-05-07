@@ -44,7 +44,7 @@
         <el-button type="primary" @click="handleAdd" style="float: right;">>保存并结束就诊</el-button>
       </el-card>
       <el-card v-if="reregistration" style="margin-top: 5px;">
-        <el-form label-width="100px" :model="careHistory" ref="reregistrationRef" :rules="rules">
+        <el-form label-width="100px" :model="careHistory" ref="careHistoryRef" :rules="rules">
           <el-row>
             <el-col :span="8">
               <el-form-item label="发病日期" prop="caseDate">
@@ -62,16 +62,16 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-form-item label="主诉">
+          <el-form-item label="主诉" prop="caseTitle">
             <el-input type="textarea" rows="5" v-model="careHistory.caseTitle"></el-input>
           </el-form-item>
-          <el-form-item label="诊断信息">
+          <el-form-item label="诊断信息" prop="caseResult">
             <el-input type="textarea" rows="3" v-model="careHistory.caseResult"></el-input>
           </el-form-item>
-          <el-form-item label="医生建议">
+          <el-form-item label="医生建议" prop="doctorTips">
             <el-input type="textarea" rows="3" v-model="careHistory.doctorTips"></el-input>
           </el-form-item>
-          <el-form-item label="备注">
+          <el-form-item label="备注" prop="remark">
             <el-input type="textarea" rows="3" v-model="careHistory.remark"></el-input>
           </el-form-item>
         </el-form>
@@ -98,6 +98,7 @@ let patient = ref()
 
 const patientRef = ref()
 const reregistrationRef = ref()
+const careHistoryRef = ref()
 
 let selectedRowList = ref([])
 const count = ref(0)
@@ -181,12 +182,22 @@ function handleAdd() {
   careHistory.patientName = patient.value.name
   careHistory.departmentNumber = reregistration.value.departmentNumber
   careHistory.departmentName = reregistration.value.departmentName
-  post('/his/care-historys/post', careHistory, (data: any) => {
-    post(`/his/patients/put`, patient.value, (data: any) => {
-      ElMessage.success('保存成功')
-      initializePage()
-    })
+  careHistoryRef.value.validate((valid: boolean) => {
+    if (valid) {
+      post('/his/care-historys/post', careHistory, (data: any) => {
+        post(`/his/patients/put`, patient.value, (data: any) => {
+          ElMessage.success('保存成功')
+          reregistration.value.status = 'reg-owari'
+          post(`/his/registrations/put`, reregistration.value, () => {
+            router.push({name: '挂号列表'})
+          })
+        })
+      })
+    } else {
+      ElMessage.error('请检查输入项')
+    }
   })
+
 }
 
 const rules = {
@@ -207,6 +218,27 @@ const rules = {
   name: [
     {required: true, message: '请输入姓名', trigger: 'blur'},
     {min: 2, max: 20, message: '姓名长度必须在2-20之间', trigger: 'blur'},
+  ],
+  caseDate: [
+      {required: true, message: '请选择发病日期', trigger: 'blur'},
+  ],
+  caseTitle: [
+    {required: true, message: '请输入主诉', trigger: 'blur'},
+    {min: 2, max: 200, message: '主诉长度必须在2-200之间', trigger: 'blur'},
+  ],
+  caseResult: [
+    {required: true, message: '请输入诊断信息', trigger: 'blur'},
+    {min: 2, max: 200, message: '诊断信息长度必须在2-200之间', trigger: 'blur'},
+  ],
+  doctorTips: [
+    {required: true, message: '请输入医生建议', trigger: 'blur'},
+    {min: 2, max: 200, message: '医生建议长度必须在2-200之间', trigger: 'blur'},
+  ],
+  remark: [
+    {min: 2, max: 200, message: '备注长度必须在2-200之间', trigger: 'blur'},
+  ],
+  transmissible: [
+    {required: true, message: '请选择传染性', trigger: 'blur'},
   ],
 }
 </script>
